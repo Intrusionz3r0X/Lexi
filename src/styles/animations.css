@@ -1,0 +1,91 @@
+@keyframes circuit-h1 {
+  0% { stroke-dasharray: 0 1000; stroke-dashoffset: 0; }
+  50% { stroke-dasharray: 1000 1000; stroke-dashoffset: 0; }
+  100% { stroke-dasharray: 1000 1000; stroke-dashoffset: -1000; }
+}
+
+@keyframes circuit-h2 {
+  0% { stroke-dasharray: 0 1000; stroke-dashoffset: 0; }
+  50% { stroke-dasharray: 1000 1000; stroke-dashoffset: 0; }
+  100% { stroke-dasharray: 1000 1000; stroke-dashoffset: -1000; }
+}
+
+@keyframes circuit-h3 {
+  0% { stroke-dasharray: 0 1000; stroke-dashoffset: 0; }
+  50% { stroke-dasharray: 1000 1000; stroke-dashoffset: 0; }
+  100% { stroke-dasharray: 1000 1000; stroke-dashoffset: -1000; }
+}
+
+@keyframes circuit-v1 {
+  0% { stroke-dasharray: 0 1000; stroke-dashoffset: 0; }
+  50% { stroke-dasharray: 1000 1000; stroke-dashoffset: 0; }
+  100% { stroke-dasharray: 1000 1000; stroke-dashoffset: -1000; }
+}
+
+@keyframes circuit-v2 {
+  0% { stroke-dasharray: 0 1000; stroke-dashoffset: 0; }
+  50% { stroke-dasharray: 1000 1000; stroke-dashoffset: 0; }
+  100% { stroke-dasharray: 1000 1000; stroke-dashoffset: -1000; }
+}
+
+@keyframes circuit-v3 {
+  0% { stroke-dasharray: 0 1000; stroke-dashoffset: 0; }
+  50% { stroke-dasharray: 1000 1000; stroke-dashoffset: 0; }
+  100% { stroke-dasharray: 1000 1000; stroke-dashoffset: -1000; }
+}
+
+@keyframes particle-fade {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.3); }
+}
+
+.animate-circuit-h1 {
+  animation: circuit-h1 8s linear infinite;
+}
+
+.animate-circuit-h2 {
+  animation: circuit-h2 10s linear infinite;
+  animation-delay: 2s;
+}
+
+.animate-circuit-h3 {
+  animation: circuit-h3 12s linear infinite;
+  animation-delay: 4s;
+}
+
+.animate-circuit-v1 {
+  animation: circuit-v1 8s linear infinite;
+  animation-delay: 1s;
+}
+
+.animate-circuit-v2 {
+  animation: circuit-v2 10s linear infinite;
+  animation-delay: 3s;
+}
+
+.animate-circuit-v3 {
+  animation: circuit-v3 12s linear infinite;
+  animation-delay: 5s;
+}
+
+.animate-particle-fade {
+  animation: particle-fade 4s ease-in-out infinite;
+}
+
+.animate-scan {
+  animation: scan 15s linear infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
