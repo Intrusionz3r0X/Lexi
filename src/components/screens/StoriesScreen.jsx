@@ -66,7 +66,7 @@ const StoriesScreen = ({ onSelectStory }) => {
                   </span>
                   <span className="flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-full border border-white/30">
                     <Play size={14} />
-                    {story.duration}
+                    {Math.floor(story.duration / 60)}:{(story.duration % 60).toString().padStart(2, '0')}
                   </span>
                 </div>
               </div>

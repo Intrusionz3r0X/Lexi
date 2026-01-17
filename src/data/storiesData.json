@@ -1,0 +1,131 @@
+{
+  "stories": [
+    {
+      "id": 1,
+      "title": "Apprendre avec Lexi",
+      "narrator": "Adrian López",
+      "difficulty": "Principiante",
+      "duration": 28,
+      "type": "Historia",
+      "color": "from-rose-400 to-pink-500",
+      "wordsCount": 36,
+      "timesListened": 0,
+      "transcript": [
+        {
+          "startTime": 0,
+          "endTime": 8,
+          "words": [
+            { "text": "Bonjour", "start": 0, "end": 1, "translation": "Hello" },
+            { "text": "je", "start": 1, "end": 1.3, "translation": "I" },
+            { "text": "suis", "start": 1.3, "end": 1.6, "translation": "am" },
+            { "text": "Lexi", "start": 1.6, "end": 2.2, "translation": "Lexi" },
+            { "text": "et", "start": 2.2, "end": 2.5, "translation": "and" },
+            { "text": "aujourd'hui", "start": 2.5, "end": 3.2, "translation": "today" },
+            { "text": "nous", "start": 3.2, "end": 3.5, "translation": "we" },
+            { "text": "allons", "start": 3.5, "end": 4, "translation": "will" },
+            { "text": "apprendre", "start": 4, "end": 4.8, "translation": "learn" },
+            { "text": "de", "start": 4.8, "end": 5, "translation": "some" },
+            { "text": "nouvelles", "start": 5, "end": 5.6, "translation": "new" },
+            { "text": "mots.", "start": 5.6, "end": 8, "translation": "words." }
+          ],
+          "translation": "Hello, I am Lexi and today we will learn new words."
+        }
+      ],
+      "culturalContent": {
+        "title": "Conseil Linguistique",
+        "paragraphs": [
+          "Commencer avec de petites histoires facilite l'apprentissage d'une nouvelle langue. Les répétitions et la pratique auditive sont essentielles.",
+          "Starting with short stories makes learning a new language easier. Repetition and listening practice are essential."
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "Comment avoir de bonnes habitudes",
+      "narrator": "Adrian López",
+      "difficulty": "Intermedio",
+      "duration": 35,
+      "type": "Historia",
+      "color": "from-amber-400 to-orange-500",
+      "wordsCount": 40,
+      "timesListened": 0,
+      "transcript": [
+        {
+          "startTime": 0,
+          "endTime": 10,
+          "words": [
+            { "text": "Pour", "start": 0, "end": 0.5, "translation": "To" },
+            { "text": "créer", "start": 0.5, "end": 1, "translation": "create" },
+            { "text": "de", "start": 1, "end": 1.2, "translation": "good" },
+            { "text": "bonnes", "start": 1.2, "end": 1.5, "translation": "habits" },
+            { "text": "habitudes,", "start": 1.5, "end": 2.2, "translation": "habits" },
+            { "text": "il", "start": 2.2, "end": 2.5, "translation": "it" },
+            { "text": "faut", "start": 2.5, "end": 2.8, "translation": "is" },
+            { "text": "commencer", "start": 2.8, "end": 3.5, "translation": "start" },
+            { "text": "petit.", "start": 3.5, "end": 4, "translation": "small." },
+            { "text": "Chaque", "start": 4, "end": 4.5, "translation": "Each" },
+            { "text": "jour", "start": 4.5, "end": 5, "translation": "day" },
+            { "text": "compte", "start": 5, "end": 5.5, "translation": "counts" },
+            { "text": "et", "start": 5.5, "end": 5.7, "translation": "and" },
+            { "text": "la", "start": 5.7, "end": 6, "translation": "the" },
+            { "text": "constance", "start": 6, "end": 6.5, "translation": "consistency" },
+            { "text": "est", "start": 6.5, "end": 7, "translation": "is" },
+            { "text": "clé.", "start": 7, "end": 10, "translation": "key." }
+          ],
+          "translation": "To create good habits, start small. Every day counts and consistency is key."
+        }
+      ],
+      "culturalContent": {
+        "title": "Conseil de Vie",
+        "paragraphs": [
+          "La psychologie montre que les routines simples sont plus faciles à maintenir.",
+          "Psychology shows that simple routines are easier to maintain."
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Interagir avec les objets",
+      "narrator": "Adrian López",
+      "difficulty": "Intermedio",
+      "duration": 40,
+      "type": "Podcast",
+      "color": "from-indigo-400 to-purple-500",
+      "wordsCount": 30,
+      "timesListened": 0,
+      "transcript": [
+        {
+          "startTime": 0,
+          "endTime": 10,
+          "words": [
+            { "text": "Salut", "start": 0, "end": 1, "translation": "Hi" },
+            { "text": "les", "start": 1, "end": 1.3, "translation": "everyone" },
+            { "text": "amis,", "start": 1.3, "end": 1.8, "translation": "friends" },
+            { "text": "aujourd'hui", "start": 1.8, "end": 2.5, "translation": "today" },
+            { "text": "je", "start": 2.5, "end": 2.7, "translation": "I" },
+            { "text": "vais", "start": 2.7, "end": 3, "translation": "will" },
+            { "text": "vous", "start": 3, "end": 3.2, "translation": "show" },
+            { "text": "montrer", "start": 3.2, "end": 3.8, "translation": "how" },
+            { "text": "comment", "start": 3.8, "end": 4.2, "translation": "to interact" },
+            { "text": "interagir", "start": 4.2, "end": 4.7, "translation": "with" },
+            { "text": "avec", "start": 4.7, "end": 5, "translation": "objects" },
+            { "text": "les", "start": 5, "end": 5.2, "translation": "as" },
+            { "text": "si", "start": 5.2, "end": 5.5, "translation": "if" },
+            { "text": "vous", "start": 5.5, "end": 5.7, "translation": "you" },
+            { "text": "étiez", "start": 5.7, "end": 6, "translation": "were" },
+            { "text": "un", "start": 6, "end": 6.2, "translation": "a" },
+            { "text": "YouTuber.", "start": 6.2, "end": 10, "translation": "YouTuber." }
+          ],
+          "translation": "Hi everyone, today I will show you how to interact with objects as if you were a YouTuber."
+        }
+      ],
+      "culturalContent": {
+        "title": "Conseil Podcast",
+        "paragraphs": [
+          "Parler aux objets et filmer votre interaction est un excellent exercice pour pratiquer la langue et la créativité.",
+          "Talking to objects and filming your interaction is a great exercise for practicing language and creativity."
+        ]
+      }
+    }
+  ]
+}
