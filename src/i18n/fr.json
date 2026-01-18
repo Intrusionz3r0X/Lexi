@@ -1,0 +1,83 @@
+{
+  "home": {
+    "welcome": "Bonjour, {{name}} ! 👋",
+    "streak": {
+      "current": "Série actuelle",
+      "days": "{{days}} jours 🔥",
+      "record": "Record personnel",
+      "recordDays": "{{recordDays}} jours",
+      "motivation": "Incroyable ! Vous êtes à seulement {{daysLeft}} jours de votre meilleure série. Continuez comme ça ! 💪"
+    },
+    "vocabProgress": {
+      "title": "Progression du vocabulaire",
+      "mastered": "Maîtrisées",
+      "learned": "Apprises",
+      "newToday": "Nouvelles aujourd'hui"
+    },
+    "stats": {
+      "lessons": "Leçons",
+      "lessonsCompletion": "{{percent}}% terminé",
+      "month": "Ce mois-ci",
+      "growth": "+{{percent}}% par rapport au mois précédent"
+    },
+    "recentAchievements": {
+      "title": "Réalisations récentes",
+      "streak": "Série de 7 jours",
+      "words": "245 mots",
+      "firstStory": "Première histoire"
+    },
+    "mainButton": "Continuer à apprendre"
+  },
+  "lessons": {
+    "title": "Leçons",
+    "subtitle": "Choisissez une catégorie pour commencer",
+    "progressBadge": "{{percent}}%",
+    "progressText": "{{progress}}/{{total}}"
+  },
+  "settings": {
+    "profile": {
+      "title": "Profil utilisateur",
+      "name": "Nom complet",
+      "email": "E-mail"
+    },
+    "languages": {
+      "native": "Langue maternelle",
+      "target": "Langue cible"
+    },
+    "difficulty": {
+      "title": "Difficulté",
+      "wordsPerSession": "Nombre de nouveaux mots par session",
+      "storyRatio": "Proportion dans les histoires",
+      "reflectionTime": "Temps de réflexion (audio + cartes)",
+      "syntaxComplexity": "Complexité syntaxique (pas seulement vocabulaire)",
+      "easy": "Facile",
+      "normal": "Normal",
+      "hard": "Difficile"
+    },
+    "notifications": {
+      "title": "Rappels quotidiens",
+      "subtitle": "Maintenez votre série active"
+    },
+    "logout": "Se déconnecter"
+  },
+  "stories": {
+    "title": "Histoires & Podcasts",
+    "subtitle": "Apprenez en écoutant du contenu authentique",
+    "badge": {
+      "podcast": "🎙️ PODCAST",
+      "story": "📖 HISTOIRE"
+    },
+    "info": {
+      "narrator": "Narrateur",
+      "duration": "Durée"
+    },
+    "playButton": "Lire"
+  },
+  "navBar": {
+    "home": "Accueil",
+    "lessons": "Leçons",
+    "stories": "Histoires",
+    "achievements": "Réalisations",
+    "settings": "Paramètres"
+  }
+}

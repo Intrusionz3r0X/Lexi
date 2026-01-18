@@ -1,0 +1,83 @@
+{
+  "home": {
+    "welcome": "Hello, {{name}}! 👋",
+    "streak": {
+      "current": "Current streak",
+      "days": "{{days}} days 🔥",
+      "record": "Personal record",
+      "recordDays": "{{recordDays}} days",
+      "motivation": "Amazing! You're only {{daysLeft}} days away from your best streak. Keep it up! 💪"
+    },
+    "vocabProgress": {
+      "title": "Vocabulary Progress",
+      "mastered": "Mastered",
+      "learned": "Learned",
+      "newToday": "New today"
+    },
+    "stats": {
+      "lessons": "Lessons",
+      "lessonsCompletion": "{{percent}}% completed",
+      "month": "This month",
+      "growth": "+{{percent}}% vs last month"
+    },
+    "recentAchievements": {
+      "title": "Recent Achievements",
+      "streak": "7-day streak",
+      "words": "245 words",
+      "firstStory": "First story"
+    },
+    "mainButton": "Continue learning"
+  },
+  "lessons": {
+    "title": "Lessons",
+    "subtitle": "Choose a category to start",
+    "progressBadge": "{{percent}}%",
+    "progressText": "{{progress}}/{{total}}"
+  },
+  "settings": {
+    "profile": {
+      "title": "User Profile",
+      "name": "Full Name",
+      "email": "Email"
+    },
+    "languages": {
+      "native": "Native language",
+      "target": "Target language"
+    },
+    "difficulty": {
+      "title": "Difficulty",
+      "wordsPerSession": "Number of new words per session",
+      "storyRatio": "Story ratio",
+      "reflectionTime": "Reflection time (audio + cards)",
+      "syntaxComplexity": "Syntax complexity (not just vocab)",
+      "easy": "Easy",
+      "normal": "Normal",
+      "hard": "Hard"
+    },
+    "notifications": {
+      "title": "Daily reminders",
+      "subtitle": "Keep your streak alive"
+    },
+    "logout": "Log out"
+  },
+  "stories": {
+    "title": "Stories & Podcasts",
+    "subtitle": "Learn by listening to authentic content",
+    "badge": {
+      "podcast": "🎙️ PODCAST",
+      "story": "📖 STORY"
+    },
+    "info": {
+      "narrator": "Narrator",
+      "duration": "Duration"
+    },
+    "playButton": "Play"
+  },
+  "navBar": {
+    "home": "Home",
+    "lessons": "Lessons",
+    "stories": "Stories",
+    "achievements": "Achievements",
+    "settings": "Settings"
+  }
+}

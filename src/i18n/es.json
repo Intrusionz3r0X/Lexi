@@ -1,0 +1,83 @@
+{
+  "home": {
+    "welcome": "¡Hola, {{name}}! 👋",
+    "streak": {
+      "current": "Racha actual",
+      "days": "{{days}} días 🔥",
+      "record": "Récord personal",
+      "recordDays": "{{recordDays}} días",
+      "motivation": "¡Increíble! Estás a solo {{daysLeft}} días de tu mejor racha. ¡Sigue así! 💪"
+    },
+    "vocabProgress": {
+      "title": "Progreso de Vocabulario",
+      "mastered": "Dominadas",
+      "learned": "Aprendidas",
+      "newToday": "Nuevas hoy"
+    },
+    "stats": {
+      "lessons": "Lecciones",
+      "lessonsCompletion": "{{percent}}% completado",
+      "month": "Este mes",
+      "growth": "+{{percent}}% vs mes anterior"
+    },
+    "recentAchievements": {
+      "title": "Logros Recientes",
+      "streak": "Racha de 7 días",
+      "words": "245 palabras",
+      "firstStory": "Primera historia"
+    },
+    "mainButton": "Continuar aprendiendo"
+  },
+  "lessons": {
+    "title": "Lecciones",
+    "subtitle": "Elige una categoría para comenzar",
+    "progressBadge": "{{percent}}%",
+    "progressText": "{{progress}}/{{total}}"
+  },
+  "settings": {
+    "profile": {
+      "title": "Perfil de usuario",
+      "name": "Nombre completo",
+      "email": "Correo electrónico"
+    },
+    "languages": {
+      "native": "Idioma nativo",
+      "target": "Idioma objetivo"
+    },
+    "difficulty": {
+      "title": "Dificultad",
+      "wordsPerSession": "Cantidad de palabras nuevas por sesión",
+      "storyRatio": "Proporción en historias",
+      "reflectionTime": "Tiempo de reflexión (audio + tarjetas)",
+      "syntaxComplexity": "Complejidad sintáctica (no solo vocabulario)",
+      "easy": "Fácil",
+      "normal": "Normal",
+      "hard": "Difícil"
+    },
+    "notifications": {
+      "title": "Recordatorios diarios",
+      "subtitle": "Mantén tu racha activa"
+    },
+    "logout": "Cerrar sesión"
+  },
+  "stories": {
+    "title": "Historias & Podcasts",
+    "subtitle": "Aprende escuchando contenido auténtico",
+    "badge": {
+      "podcast": "🎙️ PODCAST",
+      "story": "📖 HISTORIA"
+    },
+    "info": {
+      "narrator": "Narrador",
+      "duration": "Duración"
+    },
+    "playButton": "Reproducir"
+  },
+  "navBar": {
+    "home": "Inicio",
+    "lessons": "Lecciones",
+    "stories": "Historias",
+    "achievements": "Logros",
+    "settings": "Ajustes"
+  }
+}

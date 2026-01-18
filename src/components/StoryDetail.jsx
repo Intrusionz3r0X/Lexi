@@ -27,7 +27,7 @@ const StoryDetail = ({ story, onClose }) => {
 
   const transcript = story.transcript || [];
   const totalDuration = story.duration || 38;
-  const culturalContent = story.culturalContent || null;
+  
 
   // Obtener línea actual según el tiempo
   const currentLine = transcript.find(
@@ -36,20 +36,37 @@ const StoryDetail = ({ story, onClose }) => {
 
   // Simulación de reproducción
   useEffect(() => {
-    let interval;
-    if (isPlaying) {
-      interval = setInterval(() => {
-        setCurrentTime((prev) => {
-          if (prev >= totalDuration) {
-            setIsPlaying(false);
-            return totalDuration;
-          }
-          return parseFloat((prev + 0.1).toFixed(1));
-        });
-      }, 100);
-    }
-    return () => clearInterval(interval);
-  }, [isPlaying]);
+  if (!isPlaying) return;
+
+  let speaking = false; // Evita que varias líneas se superpongan
+  const interval = setInterval(() => {
+    setCurrentTime(prev => {
+      const nextTime = parseFloat((prev + 0.1).toFixed(1));
+
+      // Buscar la línea actual según el tiempo
+      const line = transcript.find(
+        l => nextTime >= l.startTime && nextTime < l.endTime
+      );
+
+      if (line && !speaking) {
+        speaking = true;
+        const lineText = line.words.map(w => w.text).join(' ');
+        ttsService.speakFrench(lineText, { rate: playbackRate, onEnd: () => speaking = false });
+      }
+
+      if (nextTime >= totalDuration) {
+        setIsPlaying(false);
+        ttsService.stop(); // Detener cualquier TTS restante
+        return totalDuration;
+      }
+
+      return nextTime;
+    });
+  }, 100);
+
+  return () => clearInterval(interval);
+}, [isPlaying, transcript, playbackRate]);
+
 
   const handlePlayPause = () => setIsPlaying(!isPlaying);
   const handleSkipBack = () => setCurrentTime(Math.max(0, currentTime - 5));

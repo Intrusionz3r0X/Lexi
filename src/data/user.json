@@ -1,0 +1,27 @@
+{
+  "id": 1,
+  "profile": {
+    "name": "Adrian",
+    "email": "adrian@example.com",
+    "photo": "profile.jpg",
+    "timezone": "America/Vancouver",
+    "nativeLang": "es",
+    "learningLang": "fr"
+  },
+  "preferences": {
+    "theme": "dark",
+    "notifications": true
+  },
+  "difficulty": {
+    "wordsPerSession": 5,
+    "storyProportion": 1,
+    "reflectionTime": 1,
+    "syntacticComplexity": 1
+  },
+  "stats": {
+    "totalCardsLearned": 0,
+    "totalExposure": 0,
+    "averageAAS": 0,
+    "lastActive": "2026-01-14T00:00:00Z"
+  }
+}
