@@ -1,0 +1,23 @@
+[
+  { "id": 1, "word": "Aller", "meaning": "Ir", "context": "Nous allons au parc.", "deckId": 1 },
+  { "id": 2, "word": "Venir", "meaning": "Venir", "context": "Ils viennent demain.", "deckId": 1 },
+  { "id": 3, "word": "Courir", "meaning": "Correr", "context": "Je cours tous les matins.", "deckId": 1 },
+  { "id": 4, "word": "Marcher", "meaning": "Caminar", "context": "Elle marche vite pour arriver à l'heure.", "deckId": 1 },
+  { "id": 5, "word": "Sauter", "meaning": "Saltar", "context": "Les enfants sautent dans le jardin.", "deckId": 1 },
+  { "id": 6, "word": "Monter", "meaning": "Subir/Ascender", "context": "Je monte les escaliers.", "deckId": 1 },
+  { "id": 7, "word": "Descendre", "meaning": "Bajar", "context": "Il descend de la montagne.", "deckId": 1 },
+  { "id": 8, "word": "Tourner", "meaning": "Girar", "context": "Tournez à gauche au prochain feu.", "deckId": 1 },
+  { "id": 9, "word": "Passer", "meaning": "Pasar", "context": "Je passe devant la boulangerie.", "deckId": 1 },
+  { "id": 10, "word": "Rentrer", "meaning": "Volver a casa/Entrar", "context": "Elle rentre à la maison.", "deckId": 1 },
+
+  { "id": 11, "word": "Penser", "meaning": "Pensar", "context": "Je pense à mes vacances.", "deckId": 2 },
+  { "id": 12, "word": "Savoir", "meaning": "Saber", "context": "Elle sait parler français.", "deckId": 2 },
+  { "id": 13, "word": "Comprendre", "meaning": "Comprender", "context": "Il comprend la leçon.", "deckId": 2 },
+  { "id": 14, "word": "Croire", "meaning": "Creer", "context": "Je crois en toi.", "deckId": 2 },
+  { "id": 15, "word": "Se souvenir", "meaning": "Recordar", "context": "Je me souviens de mon enfance.", "deckId": 2 },
+  { "id": 16, "word": "Imaginer", "meaning": "Imaginar", "context": "Elle imagine un monde meilleur.", "deckId": 2 },
+  { "id": 17, "word": "Réfléchir", "meaning": "Reflexionar", "context": "Il réfléchit avant de répondre.", "deckId": 2 },
+  { "id": 18, "word": "Oublier", "meaning": "Olvidar", "context": "Je oublie parfois mes clés.", "deckId": 2 },
+  { "id": 19, "word": "Décider", "meaning": "Decidir", "context": "Nous décidons ensemble.", "deckId": 2 },
+  { "id": 20, "word": "Expliquer", "meaning": "Explicar", "context": "Elle explique la règle.", "deckId": 2 }
+]
