@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Volume2, RotateCcw, Check, X, Clock, ArrowRight, Mic, Keyboard, MicOff, ChevronRight, Target, Brain, Award, Zap } from 'lucide-react';
 import cardExamples from '../../data/cardsexamples.json';
 
-
 // ----------------------------------------------------------------------
 // FUNCIONES DE UTILIDAD
 // ----------------------------------------------------------------------
@@ -98,6 +97,7 @@ const checkAnswer = (userAnswer, correctWord, correctMeaning, exactMode = false)
 // ----------------------------------------------------------------------
 // COMPONENTE DE CONFETTI PARA CELEBRACIONES
 // ----------------------------------------------------------------------
+
 const Confetti = () => {
   const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#10b981', '#f59e0b'];
   const confetti = Array.from({ length: 50 }, (_, i) => ({
@@ -130,7 +130,7 @@ const Confetti = () => {
 // ----------------------------------------------------------------------
 // COMPONENTE PRINCIPAL DE LA APLICACIÓN
 // ----------------------------------------------------------------------
-const LexiFlashScreen = ({ category, onBack }) => {
+const LexiFlashScreen = ({ category }) => {
   // --------------------------------------------------------------------
   // ESTADOS DE LA APLICACIÓN
   // --------------------------------------------------------------------
@@ -235,7 +235,7 @@ const LexiFlashScreen = ({ category, onBack }) => {
       if (recognition.current) {
         try {
           recognition.current.stop();
-        } catch (e) {
+        } catch  {
           // Ya estaba detenido
         }
       }
@@ -287,7 +287,7 @@ const LexiFlashScreen = ({ category, onBack }) => {
       
       oscillator.start(ctx.currentTime);
       oscillator.stop(ctx.currentTime + 0.5);
-    } catch (e) {
+    } catch {
       console.log('Audio no disponible');
     }
   };
@@ -312,7 +312,7 @@ const LexiFlashScreen = ({ category, onBack }) => {
       
       oscillator.start(ctx.currentTime);
       oscillator.stop(ctx.currentTime + 0.3);
-    } catch (e) {
+    } catch {
       console.log('Audio no disponible');
     }
   };
@@ -606,10 +606,10 @@ const LexiFlashScreen = ({ category, onBack }) => {
         <header className="mb-8 text-center">
           <div className="inline-flex items-center gap-3 mb-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-full">
             <Brain size={24} />
-            <h1 className="text-3xl font-bold tracking-tight">{category?.title || 'LexiAudio'}</h1>
+            <h1 className="text-3xl font-bold tracking-tight">LexiFlash</h1>
           </div>
           <p className="text-slate-600 text-sm font-medium tracking-wide uppercase">
-            Aprendizaje activo de francés • Recuperación espaciada
+            {category?.title}
           </p>
         </header>
 
@@ -640,14 +640,14 @@ const LexiFlashScreen = ({ category, onBack }) => {
                 <span className="text-slate-700 font-medium">{deck.length}</span>
                 <span className="text-slate-500 text-sm">restantes</span>
               </div>
-              
+              {/* 
               <button
                 onClick={resetDeck}
                 className="flex items-center gap-2 px-5 py-3 bg-white border border-slate-300 text-slate-700 rounded-xl font-medium hover:bg-slate-50 hover:border-slate-400 transition-all hover:scale-105 shadow-sm"
               >
                 <RotateCcw size={18} />
                 <span>Reiniciar</span>
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -769,7 +769,7 @@ const LexiFlashScreen = ({ category, onBack }) => {
                           <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
                               <label className="block text-slate-700 text-sm font-medium mb-3 text-center">
-                                ¿Cuál es la traducción o significado?
+                                Escribe lo que escuchaste.
                               </label>
                               <input
                                 ref={inputRef}
@@ -799,7 +799,7 @@ const LexiFlashScreen = ({ category, onBack }) => {
                                 </div>
                               ) : (
                                 <div className="text-center">
-                                  <p className="text-slate-600 mb-6">{isListening ? '🎤 Escuchando... habla ahora' : 'Presiona el botón y di tu respuesta'}</p>
+                                  <p className="text-slate-600 mb-6">{isListening ? '🎤 Escuchando... habla ahora' : 'Presiona el botón y di tu respuesta en tu idioma nativo.'}</p>
                                   <button
                                     type="button"
                                     onClick={isRecording ? stopRecording : startRecording}
