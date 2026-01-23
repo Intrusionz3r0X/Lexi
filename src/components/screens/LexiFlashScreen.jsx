@@ -1,6 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Volume2, RotateCcw, Check, X, Clock, ArrowRight, Mic, Keyboard, MicOff, ChevronRight, Target, Brain, Award, Zap } from 'lucide-react';
-import cardExamples from '../../data/cardsexamples.json';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Volume2,
+  RotateCcw,
+  Check,
+  X,
+  Clock,
+  ArrowRight,
+  Mic,
+  Keyboard,
+  MicOff,
+  ChevronRight,
+  Target,
+  Brain,
+  Award,
+  Zap,
+} from "lucide-react";
+import cardExamples from "../../data/cardsexamples.json";
+import InteractiveWords from "../../shared/InteractiveWords";
 
 // ----------------------------------------------------------------------
 // FUNCIONES DE UTILIDAD
@@ -28,15 +44,15 @@ const levenshtein = (a, b) => {
   if (a.length === 0) return b.length;
   if (b.length === 0) return a.length;
   const matrix = [];
-  
+
   for (let i = 0; i <= b.length; i++) {
     matrix[i] = [i];
   }
-  
+
   for (let j = 0; j <= a.length; j++) {
     matrix[0][j] = j;
   }
-  
+
   for (let i = 1; i <= b.length; i++) {
     for (let j = 1; j <= a.length; j++) {
       if (b.charAt(i - 1) === a.charAt(j - 1)) {
@@ -45,12 +61,12 @@ const levenshtein = (a, b) => {
         matrix[i][j] = Math.min(
           matrix[i - 1][j - 1] + 1,
           matrix[i][j - 1] + 1,
-          matrix[i - 1][j] + 1
+          matrix[i - 1][j] + 1,
         );
       }
     }
   }
-  
+
   return matrix[b.length][a.length];
 };
 
@@ -58,11 +74,12 @@ const levenshtein = (a, b) => {
  * Normaliza texto para comparaciones (minúsculas, sin acentos, sin puntuación)
  */
 const normalizeText = (text) => {
-  return text.toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .trim()
-    .replace(/[^a-z0-9\s]/g, '');
+    .replace(/[^a-z0-9\s]/g, "");
 };
 
 /**
@@ -76,19 +93,27 @@ const isFuzzyMatch = (input, target, threshold = 2) => {
  * Verifica si la respuesta del usuario es correcta
  * Soporta coincidencias exactas y aproximadas según el modo
  */
-const checkAnswer = (userAnswer, correctWord, correctMeaning, exactMode = false) => {
+const checkAnswer = (
+  userAnswer,
+  correctWord,
+  correctMeaning,
+  exactMode = false,
+) => {
   const normalized = normalizeText(userAnswer);
   const normalizedWord = normalizeText(correctWord);
-  const normalizedMeanings = correctMeaning.split('/').map(m => normalizeText(m));
+  const normalizedMeanings = correctMeaning
+    .split("/")
+    .map((m) => normalizeText(m));
 
   // Verificación de coincidencia exacta
   if (normalized === normalizedWord) return true;
-  if (normalizedMeanings.some(meaning => normalized === meaning)) return true;
+  if (normalizedMeanings.some((meaning) => normalized === meaning)) return true;
 
   // Verificación de coincidencia aproximada (solo si no está en modo exacto)
   if (!exactMode) {
     if (isFuzzyMatch(normalized, normalizedWord)) return true;
-    if (normalizedMeanings.some(meaning => isFuzzyMatch(normalized, meaning))) return true;
+    if (normalizedMeanings.some((meaning) => isFuzzyMatch(normalized, meaning)))
+      return true;
   }
 
   return false;
@@ -99,7 +124,7 @@ const checkAnswer = (userAnswer, correctWord, correctMeaning, exactMode = false)
 // ----------------------------------------------------------------------
 
 const Confetti = () => {
-  const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#10b981', '#f59e0b'];
+  const colors = ["#6366f1", "#8b5cf6", "#ec4899", "#10b981", "#f59e0b"];
   const confetti = Array.from({ length: 50 }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
@@ -116,7 +141,7 @@ const Confetti = () => {
           className="absolute w-2 h-2 rounded-full"
           style={{
             left: `${conf.left}%`,
-            top: '-5%',
+            top: "-5%",
             backgroundColor: conf.color,
             animation: `confettiFall 3s linear ${conf.animationDelay}s forwards`,
             transform: `rotate(${conf.rotation}deg)`,
@@ -134,59 +159,67 @@ const LexiFlashScreen = ({ category }) => {
   // --------------------------------------------------------------------
   // ESTADOS DE LA APLICACIÓN
   // --------------------------------------------------------------------
-  
+  const [isLoading, setIsLoading] = useState(true);
+  const [sessionCompleted, setSessionCompleted] = useState(false);
   // Estado del mazo de cartas
   const [deck, setDeck] = useState([]);
   useEffect(() => {
-  if (!category) return;
+    if (!category) return;
 
-  const filteredCards = cardExamples.filter(c => c.deckId === category.id);
-  setDeck(shuffleArray(filteredCards));
+    const filteredCards = cardExamples.filter((c) => c.deckId === category.id);
+    setDeck(shuffleArray(filteredCards));
 
-  setCorrectCards([]);
-  setCurrentCard(null);
-  setShowSummary(false);
-  setFeedback(null);
-  setPhase('idle');
-  setShowOverlay(false);
-  setIsReplaying(false);
-  setShowConfetti(false);
-  setUserInput('');
-  setIsRecording(false);
-  setIsListening(false);
-}, [category]);
+    // RESETEA isFirstLoad aquí también
+    setInitialCardsLoaded(true);
+    setIsLoading(false);
+    setCorrectCards([]);
+    setCurrentCard(null);
+    setShowSummary(false);
+    setFeedback(null);
+    setPhase("idle");
+    setShowOverlay(false);
+    setIsReplaying(false);
+    setSessionCompleted(false);
+    setShowConfetti(false);
+    setUserInput("");
+    setIsRecording(false);
+    setIsListening(false);
+    setAudioAvailable(false);
+  }, [category]);
   // Cartas respondidas correctamente
   const [correctCards, setCorrectCards] = useState([]);
-  
+
   // Carta actual en juego
   const [currentCard, setCurrentCard] = useState(null);
-  
+
   // Estados de UI y flujo
   const [showSummary, setShowSummary] = useState(false);
   const [feedback, setFeedback] = useState(null);
-  const [phase, setPhase] = useState('idle');
+  const [phase, setPhase] = useState("idle");
   const [countdown, setCountdown] = useState(3);
   const [countdownProgress, setCountdownProgress] = useState(1);
   const [showOverlay, setShowOverlay] = useState(false);
   const [isReplaying, setIsReplaying] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [initialCardsLoaded, setInitialCardsLoaded] = useState(false);
   // Estados para modos de entrada
-  const [inputMode, setInputMode] = useState('text');
-  const [userInput, setUserInput] = useState('');
+  const [inputMode, setInputMode] = useState("text");
+  const [userInput, setUserInput] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [timeoutExpired, setTimeoutExpired] = useState(false);
+  const [audioAvailable, setAudioAvailable] = useState(false);
 
   // --------------------------------------------------------------------
   // REFERENCIAS Y EFECTOS
   // --------------------------------------------------------------------
-  const countdownDuration = 3;
+  const countdownDuration = 10;
   const countdownInterval = useRef(null);
   const progressInterval = useRef(null);
   const audioContext = useRef(null);
   const recognition = useRef(null);
   const inputRef = useRef(null);
-
+  const timeoutRef = useRef(null);
 
   //-------------------------
   // TotalCards
@@ -196,16 +229,19 @@ const LexiFlashScreen = ({ category }) => {
   // Efecto para inicializar audio y reconocimiento de voz
   useEffect(() => {
     // Inicializar contexto de audio
-    audioContext.current = new (window.AudioContext || window.webkitAudioContext)();
-    
+    audioContext.current = new (
+      window.AudioContext || window.webkitAudioContext
+    )();
+
     // Configurar reconocimiento de voz si está disponible
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
       recognition.current = new SpeechRecognition();
       recognition.current.continuous = false;
       recognition.current.interimResults = false;
-      recognition.current.lang = 'es-ES';
-      
+      recognition.current.lang = "es-ES";
+
       // Manejar resultados del reconocimiento
       recognition.current.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
@@ -213,20 +249,20 @@ const LexiFlashScreen = ({ category }) => {
         setIsRecording(false);
         setIsListening(false);
       };
-      
+
       // Manejar errores
       recognition.current.onerror = (event) => {
-        console.error('Error en reconocimiento de voz:', event.error);
+        console.error("Error en reconocimiento de voz:", event.error);
         setIsRecording(false);
         setIsListening(false);
       };
-      
+
       recognition.current.onend = () => {
         setIsRecording(false);
         setIsListening(false);
       };
     }
-    
+
     // Limpieza al desmontar el componente
     return () => {
       if (countdownInterval.current) clearInterval(countdownInterval.current);
@@ -235,35 +271,43 @@ const LexiFlashScreen = ({ category }) => {
       if (recognition.current) {
         try {
           recognition.current.stop();
-        } catch  {
+        } catch {
           // Ya estaba detenido
         }
       }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, []);
 
   useEffect(() => {
-  // Iniciar nueva carta si hay cartas disponibles
-  if (deck.length > 0 && !currentCard && phase === 'idle') {
-    startNewCard();
-  } 
-  // Mostrar confetti cuando se completan todas las cartas, pero no en la primera carga
-  else if (!isFirstLoad && deck.length === 0 && correctCards.length === totalCards) {
-    setShowConfetti(true);
-    playSuccessSound();
-    setTimeout(() => setShowConfetti(false), 5000);
-  }
+    // Iniciar nueva carta si hay cartas disponibles
+    if (
+      deck.length > 0 &&
+      !currentCard &&
+      phase === "idle" &&
+      initialCardsLoaded
+    ) {
+      startNewCard();
+    }
+  }, [deck, currentCard, phase, initialCardsLoaded]);
 
-  // Después de la primera carga, marcar que ya pasó
-  if (isFirstLoad && deck.length > 0) {
-    setIsFirstLoad(false);
-  }
-}, [deck, currentCard, phase, correctCards, isFirstLoad]);
+  useEffect(() => {
+    // Mostrar confetti cuando se completan todas las cartas
+    if (initialCardsLoaded && deck.length === 0 && correctCards.length > 0) {
+      const hasCompleted = correctCards.length === totalCards;
+      if (hasCompleted && !sessionCompleted) {
+        setSessionCompleted(true); // Marcar que la sesión se completó
+        setShowConfetti(true);
+        playSuccessSound();
+        setTimeout(() => setShowConfetti(false), 5000);
+      }
+    }
+  }, [deck, correctCards, totalCards, initialCardsLoaded, sessionCompleted]);
 
   // --------------------------------------------------------------------
   // FUNCIONES DE AUDIO Y SONIDO
   // --------------------------------------------------------------------
-  
+
   /**
    * Reproduce sonido de éxito (tres tonos ascendentes)
    */
@@ -272,23 +316,23 @@ const LexiFlashScreen = ({ category }) => {
       const ctx = audioContext.current;
       const oscillator = ctx.createOscillator();
       const gainNode = ctx.createGain();
-      
+
       oscillator.connect(gainNode);
       gainNode.connect(ctx.destination);
-      
+
       // Secuencia de tonos ascendentes
       oscillator.frequency.setValueAtTime(523.25, ctx.currentTime);
       oscillator.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
       oscillator.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
-      
+
       // Fade out
       gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-      
+
       oscillator.start(ctx.currentTime);
       oscillator.stop(ctx.currentTime + 0.5);
     } catch {
-      console.log('Audio no disponible');
+      console.log("Audio no disponible");
     }
   };
 
@@ -300,27 +344,51 @@ const LexiFlashScreen = ({ category }) => {
       const ctx = audioContext.current;
       const oscillator = ctx.createOscillator();
       const gainNode = ctx.createGain();
-      
+
       oscillator.connect(gainNode);
       gainNode.connect(ctx.destination);
-      
+
       oscillator.frequency.setValueAtTime(200, ctx.currentTime);
-      oscillator.type = 'sawtooth';
-      
+      oscillator.type = "sawtooth";
+
       gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
       gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-      
+
       oscillator.start(ctx.currentTime);
       oscillator.stop(ctx.currentTime + 0.3);
     } catch {
-      console.log('Audio no disponible');
+      console.log("Audio no disponible");
+    }
+  };
+
+  const playTickSound = () => {
+    try {
+      const ctx = audioContext.current;
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      // Sonido corto y agudo para el tick
+      oscillator.frequency.setValueAtTime(800, ctx.currentTime);
+      oscillator.type = "sine";
+
+      // Fade rápido
+      gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + 0.1);
+    } catch {
+      console.log("Audio no disponible");
     }
   };
 
   /**
    * Sintetiza voz para leer texto
    */
-  const speak = (text, lang = 'fr-FR') => {
+  const speak = (text, lang = "fr-FR") => {
     return new Promise((resolve) => {
       speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
@@ -334,20 +402,20 @@ const LexiFlashScreen = ({ category }) => {
   // --------------------------------------------------------------------
   // FUNCIONES DE FLUJO DE JUEGO
   // --------------------------------------------------------------------
-  
+
   /**
    * Inicia la cuenta regresiva para la fase de reflexión
    */
   const startCountdown = () => {
-  return new Promise((resolve) => {
+    if (countdownInterval.current) clearInterval(countdownInterval.current);
+
     let count = countdownDuration;
     setCountdown(count);
     let progress = 1;
     setCountdownProgress(progress);
 
-    // Intervalo de 100ms para sincronizar barra y número
-    const intervalMs = 100;
-    const steps = countdownDuration * 1000 / intervalMs;
+    const intervalMs = 1000; // Cambié a 1000ms (1 segundo) para sonido por segundo
+    const steps = (countdownDuration * 1000) / intervalMs;
     let currentStep = 0;
 
     countdownInterval.current = setInterval(() => {
@@ -360,69 +428,118 @@ const LexiFlashScreen = ({ category }) => {
       progress = progress >= 0 ? progress : 0;
       setCountdownProgress(progress);
 
+      // Reproducir sonido de tick en cada segundo (excepto en 0)
+      if (count > 0) {
+        playTickSound();
+      }
+
       if (currentStep >= steps) {
         clearInterval(countdownInterval.current);
-        resolve();
+        countdownInterval.current = null;
       }
     }, intervalMs);
-  });
-};
+  };
 
+  /**
+   * Procesa automáticamente como incorrecto cuando se acaba el tiempo
+   */
+  const handleTimeout = () => {
+    if (phaseRef.current !== "reflection") return; // ⚡ importante
+    setFeedback("incorrect");
+    setPhase("feedback-incorrect");
+    setTimeoutExpired(true);
+    playErrorSound();
 
-
-
+    setTimeout(() => {
+      setShowSummary(true);
+      setShowOverlay(false);
+    }, 1500);
+  };
 
   /**
    * Inicia una nueva carta del mazo
    */
   const startNewCard = async () => {
     if (deck.length === 0) return;
-    
+
+    // Limpiar timeout e intervalos anteriores
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    if (countdownInterval.current) {
+      clearInterval(countdownInterval.current);
+      countdownInterval.current = null;
+    }
+    if (progressInterval.current) {
+      clearInterval(progressInterval.current);
+      progressInterval.current = null;
+    }
+
     // Resetear estados de UI
     setShowSummary(false);
     setFeedback(null);
     setShowOverlay(false);
-    setUserInput('');
-    
+    setUserInput("");
+    setTimeoutExpired(false);
+    setAudioAvailable(false);
+
+    // Limpiar timeout anterior si existe
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
     // Obtener primera carta del mazo
     const card = deck[0];
     setCurrentCard(card);
 
     // Fase 1: Escuchar la palabra
-    setPhase('listening-word');
+    setPhase("listening-word");
     await speak(card.word);
-    
+
     // Fase 2: Escuchar el contexto
-    setPhase('listening-context');
-    await new Promise(resolve => setTimeout(resolve, 500));
+    setPhase("listening-context");
+    await new Promise((resolve) => setTimeout(resolve, 500));
     await speak(card.context);
-    
+
     // Fase 3: Tiempo de reflexión
-    setPhase('reflection');
-    //startCountdown();
-    await startCountdown();
-    
-    // Fase 4: Responder
-    setPhase('answer');
+    setPhase("reflection");
+    phaseRef.current = "reflection"; // ⚡ Actualiza inmediatamente la referencia
+    setAudioAvailable(true);
+    // Configurar timeout para cuando se acabe el tiempo
+    timeoutRef.current = setTimeout(() => {
+      console.log("Timeout ejecutándose - tiempo agotado");
+      handleTimeout();
+    }, countdownDuration * 1000);
+
+    // Iniciar cuenta regresiva visual
+    startCountdown(); // solo visual
   };
+  const phaseRef = useRef(phase);
+  useEffect(() => {
+    phaseRef.current = phase;
+  }, [phase]);
 
   /**
    * Inicia la grabación de voz
    */
   const startRecording = () => {
     if (!recognition.current) {
-      alert('El reconocimiento de voz no está disponible en tu navegador. Por favor, usa Chrome o Edge.');
+      alert(
+        "El reconocimiento de voz no está disponible en tu navegador. Por favor, usa Chrome o Edge.",
+      );
       return;
     }
-    
+
     setIsRecording(true);
     setIsListening(true);
-    setUserInput('');
-    
+    setUserInput("");
+
     try {
       recognition.current.start();
     } catch (e) {
-      console.error('Error al iniciar reconocimiento:', e);
+      console.error("Error al iniciar reconocimiento:", e);
       setIsRecording(false);
       setIsListening(false);
     }
@@ -436,7 +553,7 @@ const LexiFlashScreen = ({ category }) => {
       try {
         recognition.current.stop();
       } catch (e) {
-        console.error('Error al detener reconocimiento:', e);
+        console.error("Error al detener reconocimiento:", e);
       }
     }
   };
@@ -445,33 +562,54 @@ const LexiFlashScreen = ({ category }) => {
    * Procesa la respuesta del usuario
    */
   const handleSubmit = (e) => {
+    if (countdownInterval.current) {
+      clearInterval(countdownInterval.current);
+      countdownInterval.current = null;
+    }
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
     if (e) e.preventDefault();
-    
-    // Validar que haya una respuesta
+
+    // Si se está en fase de reflexión o respuesta, procesar
+    if (phase !== "reflection" && phase !== "answer") return;
+
+    // Si no hay respuesta, marcar como incorrecto
     if (!userInput.trim()) {
-      alert('Por favor, proporciona una respuesta antes de verificar.');
+      setFeedback("incorrect");
+      setPhase("feedback-incorrect");
+      setTimeoutExpired(false);
+      playErrorSound();
+
+      setTimeout(() => {
+        setShowSummary(true);
+        setShowOverlay(false);
+      }, 1500);
       return;
     }
-    
-    if (phase !== 'answer') return;
 
     // Mostrar overlay de procesamiento
     setShowOverlay(true);
- 
-  // Actual: const exactMode = inputMode === 'text';
-  // Nueva: const exactMode = true; // Siempre exacto
+
     // Verificar respuesta (modo exacto solo para texto)
-    const exactMode = true;
-    const isCorrect = checkAnswer(userInput, currentCard.word, currentCard.meaning, exactMode);
+    const exactMode = inputMode === "text";
+    const isCorrect = checkAnswer(
+      userInput,
+      currentCard.word,
+      currentCard.meaning,
+      exactMode,
+    );
 
     // Procesar resultado
     if (isCorrect) {
-      setFeedback('correct');
-      setPhase('feedback-correct');
+      setFeedback("correct");
+      setPhase("feedback-correct");
       playSuccessSound();
     } else {
-      setFeedback('incorrect');
-      setPhase('feedback-incorrect');
+      setFeedback("incorrect");
+      setPhase("feedback-incorrect");
       playErrorSound();
     }
 
@@ -485,60 +623,76 @@ const LexiFlashScreen = ({ category }) => {
   /**
    * Avanza a la siguiente carta
    */
+
   const handleNext = () => {
+    console.log(
+      "Siguiente carta - feedback:",
+      feedback,
+      "timeoutExpired:",
+      timeoutExpired,
+    );
+
     // Si la respuesta fue correcta, mover la carta a correctCards
-    if (feedback === 'correct') {
+    if (feedback === "correct") {
       setCorrectCards([...correctCards, currentCard]);
       setDeck(deck.slice(1));
-    } 
-    // Si fue incorrecta, mover la carta al final del mazo
+    }
+    // Si fue incorrecta (por tiempo o respuesta incorrecta), mover la carta al final del mazo
     else {
       const newDeck = [...deck.slice(1), deck[0]];
       setDeck(newDeck);
     }
-    
+
     // Resetear estados para la siguiente carta
     setCurrentCard(null);
     setFeedback(null);
     setShowSummary(false);
-    setUserInput('');
-    setPhase('idle');
+    setUserInput("");
+    setTimeoutExpired(false);
+    setPhase("idle");
+    setAudioAvailable(false);
   };
 
   /**
    * Reinicia completamente el mazo y todos los estados
    */
   const resetDeck = () => {
-  if (!category) return;
+    if (!category) return;
 
-  const filteredCards = cardExamples.filter(c => c.deckId === category.id);
-  setDeck(shuffleArray(filteredCards));
-  setCorrectCards([]);
-  setCurrentCard(null);
-  setShowSummary(false);
-  setFeedback(null);
-  setPhase('idle');
-  setShowOverlay(false);
-  setIsReplaying(false);
-  setShowConfetti(false);
-  setUserInput('');
-  setIsRecording(false);
-  setIsListening(false);
-};
-
+    const filteredCards = cardExamples.filter((c) => c.deckId === category.id);
+    setDeck(shuffleArray(filteredCards));
+    setCorrectCards([]);
+    setCurrentCard(null);
+    setInitialCardsLoaded(true);
+    setSessionCompleted(false);
+    setShowSummary(false);
+    setFeedback(null);
+    setPhase("idle");
+    setShowOverlay(false);
+    setIsReplaying(false);
+    setShowConfetti(false);
+    setUserInput("");
+    setIsRecording(false);
+    setIsListening(false);
+    setTimeoutExpired(false);
+    setAudioAvailable(false);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+  };
 
   /**
    * Reproduce el audio de la carta actual
    */
+  // ENCUENTRA la función replayAudio (alrededor de la línea 370) y MODIFÍCALA:
   const replayAudio = async () => {
-    if (!currentCard || isReplaying) return;
-    
+    // Solo permitir si hay carta, no está reproduciendo Y el audio está disponible
+    if (!currentCard || isReplaying || !audioAvailable) return;
+
     setIsReplaying(true);
-    
+
     await speak(currentCard.word);
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     await speak(currentCard.context);
-    
+
     setIsReplaying(false);
   };
 
@@ -546,57 +700,57 @@ const LexiFlashScreen = ({ category }) => {
   // RENDERIZADO DEL COMPONENTE
   // --------------------------------------------------------------------
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-4 md:p-6 font-sans">
+    <div className="min-h-screen p-4 md:p-6 font-sans">
       {/* Estilos CSS personalizados */}
       <style>{`
-        @keyframes confettiFall {
-          0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
-        @keyframes cardFlip {
-          0% { transform: rotateY(0); }
-          100% { transform: rotateY(180deg); }
-        }
-        @keyframes cardRemoval {
-          0% { transform: translateX(0) scale(1); opacity: 1; }
-          100% { transform: translateX(-100%) scale(0.8); opacity: 0; }
-        }
-        @keyframes cardToQueue {
-          0% { transform: translateX(0) scale(1); opacity: 1; }
-          50% { transform: translateX(100%) scale(0.8); opacity: 0.5; }
-          100% { transform: translateX(200%) scale(0); opacity: 0; }
-        }
-        @keyframes popIn {
-          0% { transform: scale(0.95); opacity: 0; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        @keyframes slideUp {
-          0% { transform: translateY(20px); opacity: 0; }
-          100% { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes pulseSubtle {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.7; }
-        }
-        .card-flip {
-          animation: cardFlip 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-        .card-removal {
-          animation: cardRemoval 0.5s ease-out forwards;
-        }
-        .card-to-queue {
-          animation: cardToQueue 0.8s ease-in-out forwards;
-        }
-        .pop-in {
-          animation: popIn 0.3s ease-out forwards;
-        }
-        .slide-up {
-          animation: slideUp 0.4s ease-out forwards;
-        }
-        .pulse-subtle {
-          animation: pulseSubtle 2s ease-in-out infinite;
-        }
-      `}</style>
+      @keyframes confettiFall {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+      }
+      @keyframes cardFlip {
+        0% { transform: rotateY(0); }
+        100% { transform: rotateY(180deg); }
+      }
+      @keyframes cardRemoval {
+        0% { transform: translateX(0) scale(1); opacity: 1; }
+        100% { transform: translateX(-100%) scale(0.8); opacity: 0; }
+      }
+      @keyframes cardToQueue {
+        0% { transform: translateX(0) scale(1); opacity: 1; }
+        50% { transform: translateX(100%) scale(0.8); opacity: 0.5; }
+        100% { transform: translateX(200%) scale(0); opacity: 0; }
+      }
+      @keyframes popIn {
+        0% { transform: scale(0.95); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+      @keyframes slideUp {
+        0% { transform: translateY(20px); opacity: 0; }
+        100% { transform: translateY(0); opacity: 1; }
+      }
+      @keyframes pulseSubtle {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+      .card-flip {
+        animation: cardFlip 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      }
+      .card-removal {
+        animation: cardRemoval 0.5s ease-out forwards;
+      }
+      .card-to-queue {
+        animation: cardToQueue 0.8s ease-in-out forwards;
+      }
+      .pop-in {
+        animation: popIn 0.3s ease-out forwards;
+      }
+      .slide-up {
+        animation: slideUp 0.4s ease-out forwards;
+      }
+      .pulse-subtle {
+        animation: pulseSubtle 2s ease-in-out infinite;
+      }
+    `}</style>
 
       {/* Confetti para celebración */}
       {showConfetti && <Confetti />}
@@ -623,87 +777,116 @@ const LexiFlashScreen = ({ category }) => {
                   <span className="text-slate-700 font-semibold">Progreso</span>
                 </div>
                 <span className="text-2xl font-bold text-slate-800">
-                  {correctCards.length}<span className="text-slate-400">/{totalCards}</span>
+                  {correctCards.length}
+                  <span className="text-slate-400">/{totalCards}</span>
                 </span>
               </div>
               <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
                 <div
                   className="bg-gradient-to-r from-indigo-500 to-purple-500 h-full rounded-full transition-all duration-700"
-                  style={{ width: `${(correctCards.length / totalCards) * 100}%` }}
+                  style={{
+                    width: `${(correctCards.length / totalCards) * 100}%`,
+                  }}
                 />
               </div>
             </div>
-            
+
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 px-4 py-2 bg-indigo-50 rounded-lg">
                 <Zap size={16} className="text-indigo-600" />
-                <span className="text-slate-700 font-medium">{deck.length}</span>
+                <span className="text-slate-700 font-medium">
+                  {deck.length}
+                </span>
                 <span className="text-slate-500 text-sm">restantes</span>
               </div>
-              {/* 
-              <button
-                onClick={resetDeck}
-                className="flex items-center gap-2 px-5 py-3 bg-white border border-slate-300 text-slate-700 rounded-xl font-medium hover:bg-slate-50 hover:border-slate-400 transition-all hover:scale-105 shadow-sm"
-              >
-                <RotateCcw size={18} />
-                <span>Reiniciar</span>
-              </button> */}
             </div>
           </div>
         </div>
 
         {/* CONTENIDO PRINCIPAL */}
-        {deck.length === 0 ? (
+        {isLoading ? (
+          // PANTALLA DE CARGA
+          <div className="text-center py-12">
+            <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-slate-700 font-medium">Cargando cartas...</p>
+          </div>
+        ) : deck.length === 0 &&
+          correctCards.length === 0 &&
+          !isLoading &&
+          initialCardsLoaded ? (
           // PANTALLA DE COMPLETADO
           <div className="bg-gradient-to-br from-white to-indigo-50 rounded-3xl shadow-2xl p-12 text-center border border-slate-200 pop-in">
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full mb-8 shadow-lg">
+            <div className="inline-flex items-center justify-center w-24 h-24a bg-gradient-to-r from-green-400 to-emerald-500 rounded-full mb-8 shadow-lg">
               <Award size={48} className="text-white" />
             </div>
-            <h2 className="text-4xl font-bold text-slate-800 mb-4">¡Dominado!</h2>
+            <h2 className="text-4xl font-bold text-slate-800 mb-4">
+              ¡Dominado!
+            </h2>
             <p className="text-slate-600 text-lg mb-8 max-w-md mx-auto">
-              Has completado todas las tarjetas con maestría. Tu memoria está más fuerte que nunca.
+              Has completado todas las tarjetas con maestría. Tu memoria está
+              más fuerte que nunca.
             </p>
-            <button 
-              onClick={resetDeck} 
+            <button
+              onClick={resetDeck}
               className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-10 py-4 rounded-xl font-semibold text-lg hover:shadow-2xl hover:scale-105 transition-all shadow-lg"
             >
               Repetir Lección
             </button>
           </div>
-        ) : currentCard && (
-          // INTERFAZ DE APRENDIZAJE
+        ) : currentCard ? (
+          // INTERFAZ DE APRENDIZAJE (cuando hay carta actual)
           <>
             {/* Overlay para transiciones */}
             {showOverlay && (
               <div className="fixed inset-0 z-40 bg-white/80 backdrop-blur-sm flex items-center justify-center">
                 <div className="text-center">
                   <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                  <p className="text-slate-700 font-medium">Procesando respuesta...</p>
+                  <p className="text-slate-700 font-medium">
+                    Procesando respuesta...
+                  </p>
                 </div>
               </div>
             )}
 
             {/* TARJETA PRINCIPAL */}
             {!showSummary && (
-              <div className={`mb-8 ${feedback ? (feedback === 'correct' ? 'card-flip' : 'card-removal') : 'slide-up'}`}>
-                <div className={`bg-white rounded-3xl shadow-2xl overflow-hidden border-2 ${feedback === 'correct' ? 'border-emerald-500' : feedback === 'incorrect' ? 'border-rose-500' : 'border-slate-100'}`}>
-                  
+              <div
+                className={`mb-8 ${feedback ? (feedback === "correct" ? "card-flip" : "card-removal") : "slide-up"}`}
+              >
+                <div
+                  className={`bg-white rounded-3xl shadow-2xl overflow-hidden border-2 ${feedback === "correct" ? "border-emerald-500" : feedback === "incorrect" ? "border-rose-500" : "border-slate-100"}`}
+                >
                   {/* Encabezado de la tarjeta */}
                   <div className="bg-gradient-to-r from-slate-50 to-white p-6 border-b border-slate-100">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <div className={`w-3 h-3 rounded-full ${phase === 'listening-word' || phase === 'listening-context' ? 'bg-amber-500 animate-pulse' : phase === 'reflection' ? 'bg-blue-500' : 'bg-emerald-500'}`}></div>
+                        <div
+                          className={`w-3 h-3 rounded-full ${phase === "listening-word" || phase === "listening-context" ? "bg-amber-500 animate-pulse" : phase === "reflection" ? "bg-blue-500" : "bg-emerald-500"}`}
+                        ></div>
                         <span className="text-slate-600 font-medium text-sm uppercase tracking-wide">
-                          {phase === 'listening-word' ? 'Escuchando' : 
-                           phase === 'listening-context' ? 'Contexto' : 
-                           phase === 'reflection' ? 'Reflexión' : 
-                           'Tu respuesta'}
+                          {phase === "listening-word"
+                            ? "Escuchando"
+                            : phase === "listening-context"
+                              ? "Contexto"
+                              : phase === "reflection"
+                                ? "Reflexión"
+                                : "Tu respuesta"}
                         </span>
                       </div>
+
                       <button
                         onClick={replayAudio}
-                        disabled={isReplaying}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${isReplaying ? 'bg-slate-100 text-slate-400' : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'}`}
+                        disabled={isReplaying || !audioAvailable} // ⬅️ AGREGAR !audioAvailable
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+                          isReplaying || !audioAvailable
+                            ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                            : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                        }`}
+                        title={
+                          !audioAvailable
+                            ? "Disponible después del contexto"
+                            : "Repetir audio"
+                        }
                       >
                         <Volume2 size={18} />
                         <span className="text-sm font-medium">Repetir</span>
@@ -713,51 +896,154 @@ const LexiFlashScreen = ({ category }) => {
 
                   {/* Contenido de la tarjeta */}
                   <div className="p-8 md:p-12">
-                    {(phase === 'listening-word' || phase === 'listening-context') && (
+                    {(phase === "listening-word" ||
+                      phase === "listening-context") && (
                       <div className="text-center py-12">
                         <div className="inline-flex items-center justify-center w-20 h-20 bg-indigo-100 rounded-full mb-8">
                           <Volume2 size={32} className="text-indigo-600" />
                         </div>
                         <h2 className="text-2xl font-bold text-slate-800 mb-4">
-                          {phase === 'listening-word' ? 'Presta atención a la palabra' : 'Escucha el contexto'}
+                          {phase === "listening-word"
+                            ? "Presta atención a la palabra"
+                            : "Escucha el contexto"}
                         </h2>
-                        <p className="text-slate-600">La repetición activa fortalece la memoria</p>
-                      </div>
-                    )}
-
-                    {phase === 'reflection' && (
-                      <div className="text-center py-10">
-                        <div className="inline-flex flex-col items-center mb-8">
-                          <Clock size={40} className="text-blue-600 mb-4" />
-                          <div className="relative w-48 h-2 bg-slate-200 rounded-full overflow-hidden">
-                            <div 
-                              className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all"
-                              style={{ width: `${countdownProgress * 100}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                        <h2 className="text-3xl font-bold text-slate-800 mb-3">Procesando</h2>
-                        <div className="text-5xl font-bold text-blue-600 mb-6">{countdown}s</div>
-                        <p className="text-slate-600 max-w-md mx-auto">
-                          Recuerda la palabra y su significado antes de responder
+                        <p className="text-slate-600">
+                          La repetición activa fortalece la memoria
                         </p>
                       </div>
                     )}
 
-                    {phase === 'answer' && !feedback && (
+                    {phase === "reflection" && !feedback && (
                       <div className="space-y-8">
-                        {/* Selector de modo de entrada */}
-                        <div className="flex justify-center gap-2 mb-8">
+                        {/* Selector de modo de entrada - AHORA DISPONIBLE DURANTE REFLEXIÓN */}
+                        <div className="flex justify-center gap-2">
                           <button
-                            onClick={() => setInputMode('text')}
-                            className={`flex items-center gap-3 px-6 py-3 rounded-xl font-medium transition-all ${inputMode === 'text' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
+                            onClick={() => setInputMode("text")}
+                            className={`flex items-center gap-3 px-6 py-3 rounded-xl font-medium transition-all ${inputMode === "text" ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}
                           >
                             <Keyboard size={20} />
                             <span>Escribir</span>
                           </button>
                           <button
-                            onClick={() => setInputMode('voice')}
-                            className={`flex items-center gap-3 px-6 py-3 rounded-xl font-medium transition-all ${inputMode === 'voice' ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
+                            onClick={() => setInputMode("voice")}
+                            className={`flex items-center gap-3 px-6 py-3 rounded-xl font-medium transition-all ${inputMode === "voice" ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}
+                          >
+                            <Mic size={20} />
+                            <span>Hablar</span>
+                          </button>
+                        </div>
+
+                        {/* Entrada según el modo - AHORA DISPONIBLE DURANTE REFLEXIÓN */}
+                        {inputMode === "text" ? (
+                          <form onSubmit={handleSubmit} className="space-y-6">
+                            <div>
+                              <label className="block text-slate-700 text-sm font-medium mb-3 text-center">
+                                Escribe lo que escuchaste.
+                              </label>
+                              <input
+                                ref={inputRef}
+                                type="text"
+                                value={userInput}
+                                onChange={(e) => setUserInput(e.target.value)}
+                                placeholder="Escribe aquí tu respuesta..."
+                                className="w-full px-6 py-4 text-lg border-2 border-slate-300 rounded-xl focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition-all"
+                                autoComplete="off"
+                                autoFocus
+                              />
+                            </div>
+                            <button
+                              type="submit"
+                              disabled={!userInput.trim()}
+                              className={`w-full py-4 rounded-xl font-semibold text-lg transition-all shadow-lg ${userInput.trim() ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-xl hover:scale-[1.02]" : "bg-slate-200 text-slate-400 cursor-not-allowed"}`}
+                            >
+                              Verificar Respuesta
+                            </button>
+                          </form>
+                        ) : (
+                          <div className="space-y-6">
+                            <div
+                              className={`p-8 rounded-xl border-2 transition-all ${isListening ? "border-red-400 bg-red-50" : "border-slate-300 bg-slate-50"}`}
+                            >
+                              {userInput ? (
+                                <div className="text-center">
+                                  <p className="text-xl text-slate-800 mb-2 font-semibold">
+                                    "{userInput}"
+                                  </p>
+                                  <p className="text-slate-600 text-sm">
+                                    Presiona el botón para verificar
+                                  </p>
+                                </div>
+                              ) : (
+                                <div className="text-center">
+                                  <p className="text-slate-600 mb-6">
+                                    {isListening
+                                      ? "🎤 Escuchando... habla ahora"
+                                      : "Presiona el botón y di tu respuesta en tu idioma nativo."}
+                                  </p>
+                                  <button
+                                    type="button"
+                                    onClick={
+                                      isRecording
+                                        ? stopRecording
+                                        : startRecording
+                                    }
+                                    className={`mx-auto flex items-center justify-center w-16 h-16 rounded-full transition-all shadow-lg ${isRecording ? "bg-red-500 text-white pulse-subtle" : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-xl hover:scale-110"}`}
+                                  >
+                                    {isRecording ? (
+                                      <MicOff size={24} />
+                                    ) : (
+                                      <Mic size={24} />
+                                    )}
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                            <button
+                              type="button"
+                              onClick={handleSubmit}
+                              disabled={!userInput.trim()}
+                              className={`w-full py-4 rounded-xl font-semibold text-lg transition-all shadow-lg ${userInput.trim() ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-xl hover:scale-[1.02]" : "bg-slate-200 text-slate-400 cursor-not-allowed"}`}
+                            >
+                              Verificar Respuesta
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Cuenta regresiva visual */}
+                        <div className="text-center pt-8 border-t border-slate-100">
+                          <div className="inline-flex flex-col items-center">
+                            <Clock size={32} className="text-blue-600 mb-3" />
+                            <div className="relative w-48 h-2 bg-slate-200 rounded-full overflow-hidden mb-2">
+                              <div
+                                className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all"
+                                style={{ width: `${countdownProgress * 100}%` }}
+                              ></div>
+                            </div>
+                            <div className="text-xl font-bold text-blue-600 mb-2">
+                              {countdown}s
+                            </div>
+                            <p className="text-slate-600 text-sm">
+                              Tiempo restante para responder
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {phase === "answer" && !feedback && (
+                      <div className="space-y-8">
+                        {/* Selector de modo de entrada */}
+                        <div className="flex justify-center gap-2 mb-8">
+                          <button
+                            onClick={() => setInputMode("text")}
+                            className={`flex items-center gap-3 px-6 py-3 rounded-xl font-medium transition-all ${inputMode === "text" ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}
+                          >
+                            <Keyboard size={20} />
+                            <span>Escribir</span>
+                          </button>
+                          <button
+                            onClick={() => setInputMode("voice")}
+                            className={`flex items-center gap-3 px-6 py-3 rounded-xl font-medium transition-all ${inputMode === "voice" ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}
                           >
                             <Mic size={20} />
                             <span>Hablar</span>
@@ -765,7 +1051,7 @@ const LexiFlashScreen = ({ category }) => {
                         </div>
 
                         {/* Entrada según el modo */}
-                        {inputMode === 'text' ? (
+                        {inputMode === "text" ? (
                           <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
                               <label className="block text-slate-700 text-sm font-medium mb-3 text-center">
@@ -784,28 +1070,46 @@ const LexiFlashScreen = ({ category }) => {
                             <button
                               type="submit"
                               disabled={!userInput.trim()}
-                              className={`w-full py-4 rounded-xl font-semibold text-lg transition-all shadow-lg ${userInput.trim() ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-xl hover:scale-[1.02]' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}
+                              className={`w-full py-4 rounded-xl font-semibold text-lg transition-all shadow-lg ${userInput.trim() ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-xl hover:scale-[1.02]" : "bg-slate-200 text-slate-400 cursor-not-allowed"}`}
                             >
                               Verificar Respuesta
                             </button>
                           </form>
                         ) : (
                           <div className="space-y-6">
-                            <div className={`p-8 rounded-xl border-2 transition-all ${isListening ? 'border-red-400 bg-red-50' : 'border-slate-300 bg-slate-50'}`}>
+                            <div
+                              className={`p-8 rounded-xl border-2 transition-all ${isListening ? "border-red-400 bg-red-50" : "border-slate-300 bg-slate-50"}`}
+                            >
                               {userInput ? (
                                 <div className="text-center">
-                                  <p className="text-xl text-slate-800 mb-2 font-semibold">"{userInput}"</p>
-                                  <p className="text-slate-600 text-sm">Presiona el botón para verificar</p>
+                                  <p className="text-xl text-slate-800 mb-2 font-semibold">
+                                    "{userInput}"
+                                  </p>
+                                  <p className="text-slate-600 text-sm">
+                                    Presiona el botón para verificar
+                                  </p>
                                 </div>
                               ) : (
                                 <div className="text-center">
-                                  <p className="text-slate-600 mb-6">{isListening ? '🎤 Escuchando... habla ahora' : 'Presiona el botón y di tu respuesta en tu idioma nativo.'}</p>
+                                  <p className="text-slate-600 mb-6">
+                                    {isListening
+                                      ? "🎤 Escuchando... habla ahora"
+                                      : "Presiona el botón y di tu respuesta en tu idioma nativo."}
+                                  </p>
                                   <button
                                     type="button"
-                                    onClick={isRecording ? stopRecording : startRecording}
-                                    className={`mx-auto flex items-center justify-center w-16 h-16 rounded-full transition-all shadow-lg ${isRecording ? 'bg-red-500 text-white pulse-subtle' : 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-xl hover:scale-110'}`}
+                                    onClick={
+                                      isRecording
+                                        ? stopRecording
+                                        : startRecording
+                                    }
+                                    className={`mx-auto flex items-center justify-center w-16 h-16 rounded-full transition-all shadow-lg ${isRecording ? "bg-red-500 text-white pulse-subtle" : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-xl hover:scale-110"}`}
                                   >
-                                    {isRecording ? <MicOff size={24} /> : <Mic size={24} />}
+                                    {isRecording ? (
+                                      <MicOff size={24} />
+                                    ) : (
+                                      <Mic size={24} />
+                                    )}
                                   </button>
                                 </div>
                               )}
@@ -814,7 +1118,7 @@ const LexiFlashScreen = ({ category }) => {
                               type="button"
                               onClick={handleSubmit}
                               disabled={!userInput.trim()}
-                              className={`w-full py-4 rounded-xl font-semibold text-lg transition-all shadow-lg ${userInput.trim() ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-xl hover:scale-[1.02]' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}
+                              className={`w-full py-4 rounded-xl font-semibold text-lg transition-all shadow-lg ${userInput.trim() ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-xl hover:scale-[1.02]" : "bg-slate-200 text-slate-400 cursor-not-allowed"}`}
                             >
                               Verificar Respuesta
                             </button>
@@ -825,24 +1129,36 @@ const LexiFlashScreen = ({ category }) => {
 
                     {/* Feedback inmediato */}
                     {feedback && !showSummary && (
-                      <div className={`py-8 px-10 rounded-2xl text-center ${feedback === 'correct' ? 'bg-gradient-to-r from-emerald-50 to-green-50 border-2 border-emerald-200' : 'bg-gradient-to-r from-rose-50 to-red-50 border-2 border-rose-200'}`}>
-                        <div className={`inline-flex items-center gap-4 px-8 py-4 rounded-full mb-6 ${feedback === 'correct' ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'}`}>
-                          {feedback === 'correct' ? (
+                      <div
+                        className={`py-8 px-10 rounded-2xl text-center ${feedback === "correct" ? "bg-gradient-to-r from-emerald-50 to-green-50 border-2 border-emerald-200" : "bg-gradient-to-r from-rose-50 to-red-50 border-2 border-rose-200"}`}
+                      >
+                        <div
+                          className={`inline-flex items-center gap-4 px-8 py-4 rounded-full mb-6 ${feedback === "correct" ? "bg-emerald-500 text-white" : "bg-rose-500 text-white"}`}
+                        >
+                          {feedback === "correct" ? (
                             <>
                               <Check size={28} />
-                              <span className="text-2xl font-bold">¡Perfecto!</span>
+                              <span className="text-2xl font-bold">
+                                ¡Perfecto!
+                              </span>
                             </>
                           ) : (
                             <>
                               <X size={28} />
-                              <span className="text-2xl font-bold">Inténtalo de nuevo</span>
+                              <span className="text-2xl font-bold">
+                                {timeoutExpired
+                                  ? "Tiempo agotado"
+                                  : "Inténtalo de nuevo"}
+                              </span>
                             </>
                           )}
                         </div>
                         <p className="text-slate-700 text-lg">
-                          {feedback === 'correct' 
-                            ? 'Has fortalecido esta conexión en tu memoria.' 
-                            : 'La práctica constante lleva al dominio. Sigue intentándolo.'}
+                          {feedback === "correct"
+                            ? "Has fortalecido esta conexión en tu memoria."
+                            : timeoutExpired
+                              ? "El tiempo de reflexión ha terminado. Sigue practicando."
+                              : "La práctica constante lleva al dominio. Sigue intentándolo."}
                         </p>
                       </div>
                     )}
@@ -854,41 +1170,65 @@ const LexiFlashScreen = ({ category }) => {
             {/* RESUMEN DESPUÉS DE LA RESPUESTA */}
             {showSummary && (
               <div className="pop-in">
-                <div className={`rounded-3xl shadow-2xl overflow-hidden border-2 ${feedback === 'correct' ? 'border-emerald-200' : 'border-rose-200'}`}>
-                  <div className={`p-8 ${feedback === 'correct' ? 'bg-gradient-to-r from-emerald-50 to-green-50' : 'bg-gradient-to-r from-rose-50 to-red-50'}`}>
+                <div
+                  className={`rounded-3xl shadow-2xl overflow-hidden border-2 ${feedback === "correct" ? "border-emerald-200" : "border-rose-200"}`}
+                >
+                  <div
+                    className={`p-8 ${feedback === "correct" ? "bg-gradient-to-r from-emerald-50 to-green-50" : "bg-gradient-to-r from-rose-50 to-red-50"}`}
+                  >
                     <div className="flex items-center justify-between mb-8">
                       <div>
-                        <h3 className="text-2xl font-bold text-slate-800 mb-2">Resumen</h3>
-                        <p className="text-slate-600">Tu respuesta: <span className="font-semibold text-slate-800">"{userInput}"</span></p>
+                        <h3 className="text-2xl font-bold text-slate-800 mb-2">
+                          Resumen
+                        </h3>
+                        <p className="text-slate-600">
+                          {timeoutExpired ? "Tiempo agotado" : `Tu respuesta: `}
+                          {!timeoutExpired && (
+                            <span className="font-semibold text-slate-800">
+                              "{userInput}"
+                            </span>
+                          )}
+                        </p>
                       </div>
-                      
                     </div>
 
                     <div className="bg-white rounded-2xl p-8 shadow-lg mb-8">
                       <div className="text-center mb-8">
-                        <div className="text-5xl font-bold text-indigo-700 mb-4">{currentCard.word}</div>
-                        <div className="text-3xl font-semibold text-slate-800 mb-2">{currentCard.meaning}</div>
+                        <div className="text-5xl font-bold text-indigo-700 mb-4">
+                          <InteractiveWords
+                            text={currentCard.word} // texto que quieres hacer clicable
+                            onWordClick={(word) => {
+                              InteractiveWords.speak(word.text); // reproducir la palabra
+                              console.log("Palabra clicada:", word.text);
+                            }}
+                          />
+                        </div>
+                        <div className="text-3xl font-semibold text-slate-800 mb-2">
+                          {currentCard.meaning}
+                        </div>
                         <div className="inline-flex items-center gap-2 text-slate-500 text-sm">
                           <ChevronRight size={16} />
                           <span>Verbo francés</span>
                         </div>
                       </div>
-                      
+
                       <div className="bg-slate-50 rounded-xl p-6">
-                        <div className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">Ejemplo en contexto</div>
-                        <div className="text-xl text-slate-800 italic leading-relaxed">"{currentCard.context}"</div>
+                        <div className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
+                          Ejemplo en contexto
+                        </div>
+                        <div className="text-3x1 text-slate-800 italic leading-relaxed">
+                          <InteractiveWords
+                            text={currentCard.context} // texto que quieres hacer clicable
+                            onWordClick={(word) => {
+                              InteractiveWords.speak(word.text); // reproducir la palabra
+                              console.log("Palabra clicada:", word.text);
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                      <button
-                        onClick={replayAudio}
-                        disabled={isReplaying}
-                        className={`flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-semibold transition-all ${isReplaying ? 'bg-slate-300 text-slate-500 cursor-not-allowed' : 'bg-white border-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50 hover:border-indigo-300 hover:scale-105 shadow-lg'}`}
-                      >
-                        <Volume2 size={22} />
-                        <span>Repetir Audio</span>
-                      </button>
                       <button
                         onClick={handleNext}
                         className="flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-semibold bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:shadow-xl hover:scale-105 transition-all shadow-lg"
@@ -902,17 +1242,38 @@ const LexiFlashScreen = ({ category }) => {
               </div>
             )}
           </>
+        ) : (
+          // PANTALLA DE ESPERA (entre cartas o al inicio)
+          <div className="text-center py-12">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-indigo-100 rounded-full mb-8">
+              <Volume2 size={32} className="text-indigo-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-slate-800 mb-4">
+              Preparando la lección...
+            </h2>
+            <p className="text-slate-600">
+              La primera carta comenzará en breve
+            </p>
+          </div>
         )}
 
         {/* FOOTER */}
         <footer className="mt-12 pt-8 border-t border-slate-200 text-center">
           <p className="text-slate-500 text-sm">
-            LexiAudio utiliza el método de <span className="font-semibold text-slate-700">recuperación espaciada</span> para una memorización óptima
+            LexiAudio utiliza el método de{" "}
+            <span className="font-semibold text-slate-700">
+              recuperación espaciada
+            </span>{" "}
+            para una memorización óptima
           </p>
           <div className="flex justify-center gap-6 mt-4">
-            <span className="text-xs text-slate-400">• Coincidencia inteligente</span>
+            <span className="text-xs text-slate-400">
+              • Coincidencia inteligente
+            </span>
             <span className="text-xs text-slate-400">• Repetición activa</span>
-            <span className="text-xs text-slate-400">• Progreso adaptativo</span>
+            <span className="text-xs text-slate-400">
+              • Progreso adaptativo
+            </span>
           </div>
         </footer>
       </div>

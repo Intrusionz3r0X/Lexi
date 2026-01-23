@@ -1,0 +1,57 @@
+/* NeuroLingua.css */
+@keyframes neural-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+@keyframes synapse-flash {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.neuron-glow {
+  filter: drop-shadow(0 0 20px currentColor);
+}
+
+.animation-delay-500 {
+  animation-delay: 500ms;
+}
+
+.animation-delay-1000 {
+  animation-delay: 1000ms;
+}
+
+/* Efectos de partículas */
+.particle {
+  position: absolute;
+  background: linear-gradient(45deg, #00ffff, #ff00ff);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Efecto de conexión neural */
+.connection-line {
+  stroke-dasharray: 10;
+  animation: dash 20s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: 1000;
+  }
+}
+
+/* Fondo de ruido sutil */
+.noise-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+}

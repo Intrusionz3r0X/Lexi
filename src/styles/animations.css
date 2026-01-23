@@ -1,91 +1,150 @@
-@keyframes circuit-h1 {
-  0% { stroke-dasharray: 0 1000; stroke-dashoffset: 0; }
-  50% { stroke-dasharray: 1000 1000; stroke-dashoffset: 0; }
-  100% { stroke-dasharray: 1000 1000; stroke-dashoffset: -1000; }
+/* animations.css - Actualizado con efectos neurales */
+
+/* Partículas flotantes */
+@keyframes float-particle {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(20px);
+    opacity: 0;
+  }
 }
 
-@keyframes circuit-h2 {
-  0% { stroke-dasharray: 0 1000; stroke-dashoffset: 0; }
-  50% { stroke-dasharray: 1000 1000; stroke-dashoffset: 0; }
-  100% { stroke-dasharray: 1000 1000; stroke-dashoffset: -1000; }
+/* Escaneo neural */
+@keyframes scan-slow {
+  0% {
+    transform: translateY(-100%) rotate(-2deg);
+  }
+  100% {
+    transform: translateY(100vh) rotate(-2deg);
+  }
 }
 
-@keyframes circuit-h3 {
-  0% { stroke-dasharray: 0 1000; stroke-dashoffset: 0; }
-  50% { stroke-dasharray: 1000 1000; stroke-dashoffset: 0; }
-  100% { stroke-dasharray: 1000 1000; stroke-dashoffset: -1000; }
+@keyframes scan-fast {
+  0% {
+    transform: translateY(-100%) rotate(1deg);
+  }
+  100% {
+    transform: translateY(100vh) rotate(1deg);
+  }
 }
 
-@keyframes circuit-v1 {
-  0% { stroke-dasharray: 0 1000; stroke-dashoffset: 0; }
-  50% { stroke-dasharray: 1000 1000; stroke-dashoffset: 0; }
-  100% { stroke-dasharray: 1000 1000; stroke-dashoffset: -1000; }
+.animate-scan-slow {
+  animation: scan-slow 20s linear infinite;
 }
 
-@keyframes circuit-v2 {
-  0% { stroke-dasharray: 0 1000; stroke-dashoffset: 0; }
-  50% { stroke-dasharray: 1000 1000; stroke-dashoffset: 0; }
-  100% { stroke-dasharray: 1000 1000; stroke-dashoffset: -1000; }
+.animate-scan-fast {
+  animation: scan-fast 8s linear infinite;
 }
 
-@keyframes circuit-v3 {
-  0% { stroke-dasharray: 0 1000; stroke-dashoffset: 0; }
-  50% { stroke-dasharray: 1000 1000; stroke-dashoffset: 0; }
-  100% { stroke-dasharray: 1000 1000; stroke-dashoffset: -1000; }
+/* Efectos de pulso neural */
+@keyframes neural-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 40px currentColor, 0 0 80px currentColor;
+  }
 }
 
+.neuron-pulse {
+  animation: neural-pulse 2s ease-in-out infinite;
+}
+
+/* Onda neural */
+@keyframes neural-wave {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Conexiones dinámicas */
+@keyframes connection-flow {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Efecto de activación */
+@keyframes neuron-activate {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.3);
+    filter: brightness(1.5);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+.neuron-activate {
+  animation: neuron-activate 0.3s ease-out;
+}
+
+/* Fondo parpadeante sutil */
+@keyframes subtle-flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.98;
+  }
+}
+
+.subtle-flicker {
+  animation: subtle-flicker 5s ease-in-out infinite;
+}
+
+/* Rotación de patrones */
+@keyframes pattern-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pattern-rotate {
+  animation: pattern-rotate 120s linear infinite;
+}
+
+/* Desvanecimiento de partículas */
 @keyframes particle-fade {
-  0%, 100% { opacity: 0; transform: scale(0.5); }
-  50% { opacity: 1; transform: scale(1); }
-}
-
-@keyframes scan {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
-}
-
-@keyframes pulse-slow {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.3); }
-}
-
-.animate-circuit-h1 {
-  animation: circuit-h1 8s linear infinite;
-}
-
-.animate-circuit-h2 {
-  animation: circuit-h2 10s linear infinite;
-  animation-delay: 2s;
-}
-
-.animate-circuit-h3 {
-  animation: circuit-h3 12s linear infinite;
-  animation-delay: 4s;
-}
-
-.animate-circuit-v1 {
-  animation: circuit-v1 8s linear infinite;
-  animation-delay: 1s;
-}
-
-.animate-circuit-v2 {
-  animation: circuit-v2 10s linear infinite;
-  animation-delay: 3s;
-}
-
-.animate-circuit-v3 {
-  animation: circuit-v3 12s linear infinite;
-  animation-delay: 5s;
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  10%, 90% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
 }
 
 .animate-particle-fade {
   animation: particle-fade 4s ease-in-out infinite;
-}
-
-.animate-scan {
-  animation: scan 15s linear infinite;
-}
-
-.animate-pulse-slow {
-  animation: pulse-slow 3s ease-in-out infinite;
 }

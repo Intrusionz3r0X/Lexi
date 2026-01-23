@@ -8,7 +8,7 @@
   { "id": 7, "word": "Descendre", "meaning": "Bajar", "context": "Il descend de la montagne.", "deckId": 1 },
   { "id": 8, "word": "Tourner", "meaning": "Girar", "context": "Tournez à gauche au prochain feu.", "deckId": 1 },
   { "id": 9, "word": "Passer", "meaning": "Pasar", "context": "Je passe devant la boulangerie.", "deckId": 1 },
-  { "id": 10, "word": "Rentrer", "meaning": "Volver a casa/Entrar", "context": "Elle rentre à la maison.", "deckId": 1 },
+  { "id": 10, "word": "Rentrer", "meaning": "Volver a casa/Entrar/Regresar a casa", "context": "Elle rentre à la maison.", "deckId": 1 },
 
   { "id": 11, "word": "Penser", "meaning": "Pensar", "context": "Je pense à mes vacances.", "deckId": 2 },
   { "id": 12, "word": "Savoir", "meaning": "Saber", "context": "Elle sait parler français.", "deckId": 2 },
