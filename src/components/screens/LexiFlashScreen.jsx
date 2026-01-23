@@ -1218,23 +1218,27 @@ const LexiFlashScreen = ({ category }) => {
         
         {/* Footer */}
         <footer className="mt-12 pt-8 border-t border-slate-200 text-center">
-          <p className="text-slate-500 text-sm">
-            LexiAudio utiliza el método de{" "}
-            <span className="font-semibold text-slate-700">
-              recuperación espaciada
-            </span>{" "}
-            para una memorización óptima
-          </p>
-          <div className="flex justify-center gap-6 mt-4">
-            <span className="text-xs text-slate-400">
-              • Coincidencia inteligente
-            </span>
-            <span className="text-xs text-slate-400">• Repetición activa</span>
-            <span className="text-xs text-slate-400">
-              • Progreso adaptativo
-            </span>
-          </div>
-        </footer>
+  <p className="text-slate-500 text-sm">
+    LexiFlash activa la{" "}
+    <span className="font-semibold text-slate-700">
+      memoria visual y auditiva
+    </span>{" "}
+    para mejorar la consolidación neuronal del vocabulario
+  </p>
+
+  <div className="flex justify-center gap-6 mt-4">
+    <span className="text-xs text-slate-400">
+      • Aprendizaje multisensorial
+    </span>
+    <span className="text-xs text-slate-400">
+      • Recuperación activa
+    </span>
+    <span className="text-xs text-slate-400">
+      • Feedback inmediato
+    </span>
+  </div>
+</footer>
+
       </div>
     </div>
   );
