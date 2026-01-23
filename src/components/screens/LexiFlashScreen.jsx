@@ -590,8 +590,6 @@ const LexiFlashScreen = ({ category }) => {
       return;
     }
 
-    // Mostrar overlay de procesamiento
-    setShowOverlay(true);
 
     // Verificar respuesta (modo exacto solo para texto)
     const exactMode = inputMode === "text";
@@ -836,23 +834,12 @@ const LexiFlashScreen = ({ category }) => {
         ) : currentCard ? (
           // INTERFAZ DE APRENDIZAJE (cuando hay carta actual)
           <>
-            {/* Overlay para transiciones */}
-            {showOverlay && (
-              <div className="fixed inset-0 z-40 bg-white/80 backdrop-blur-sm flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                  <p className="text-slate-700 font-medium">
-                    Procesando respuesta...
-                  </p>
-                </div>
-              </div>
-            )}
+            
+            
 
             {/* TARJETA PRINCIPAL */}
             {!showSummary && (
-              <div
-                className={`mb-8 ${feedback ? (feedback === "correct" ? "card-flip" : "card-removal") : "slide-up"}`}
-              >
+              <div className="mb-8 slide-up">
                 <div
                   className={`bg-white rounded-3xl shadow-2xl overflow-hidden border-2 ${feedback === "correct" ? "border-emerald-500" : feedback === "incorrect" ? "border-rose-500" : "border-slate-100"}`}
                 >
@@ -1168,79 +1155,104 @@ const LexiFlashScreen = ({ category }) => {
             )}
 
             {/* RESUMEN DESPUÉS DE LA RESPUESTA */}
-            {showSummary && (
-              <div className="pop-in">
-                <div
-                  className={`rounded-3xl shadow-2xl overflow-hidden border-2 ${feedback === "correct" ? "border-emerald-200" : "border-rose-200"}`}
-                >
-                  <div
-                    className={`p-8 ${feedback === "correct" ? "bg-gradient-to-r from-emerald-50 to-green-50" : "bg-gradient-to-r from-rose-50 to-red-50"}`}
-                  >
-                    <div className="flex items-center justify-between mb-8">
-                      <div>
-                        <h3 className="text-2xl font-bold text-slate-800 mb-2">
-                          Resumen
-                        </h3>
-                        <p className="text-slate-600">
-                          {timeoutExpired ? "Tiempo agotado" : `Tu respuesta: `}
-                          {!timeoutExpired && (
-                            <span className="font-semibold text-slate-800">
-                              "{userInput}"
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                    </div>
+            {/* RESUMEN DESPUÉS DE LA RESPUESTA */}
+{showSummary && (
+  <div className="pop-in">
+    <div className="relative rounded-3xl shadow-2xl overflow-hidden bg-white border border-slate-100">
+      {/* Encabezado minimalista */}
+      <div className={`p-6 ${feedback === "correct" ? "bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-emerald-100" : "bg-gradient-to-r from-rose-50 to-pink-50 border-b border-rose-100"}`}>
+        <div className="text-center">
+          <div className={`inline-flex items-center justify-center w-14 h-14 rounded-full mb-4 ${feedback === "correct" ? "bg-emerald-100 text-emerald-600" : "bg-rose-100 text-rose-600"}`}>
+            {feedback === "correct" ? (
+              <Check size={28} />
+            ) : (
+              <X size={28} />
+            )}
+          </div>
+          <h2 className="text-2xl font-bold text-slate-800 mb-2">
+            {feedback === "correct" ? "¡Correcto!" : "Respuesta Incorrecta"}
+          </h2>
+          <p className="text-slate-600">
+            {timeoutExpired 
+              ? "El tiempo de reflexión ha terminado" 
+              : feedback === "correct" 
+                ? "Has dominado esta palabra" 
+                : `Respuesta: "${userInput}"`
+            }
+          </p>
+        </div>
+      </div>
 
-                    <div className="bg-white rounded-2xl p-8 shadow-lg mb-8">
-                      <div className="text-center mb-8">
-                        <div className="text-5xl font-bold text-indigo-700 mb-4">
-                          <InteractiveWords
-                            text={currentCard.word} // texto que quieres hacer clicable
-                            onWordClick={(word) => {
-                              InteractiveWords.speak(word.text); // reproducir la palabra
-                              console.log("Palabra clicada:", word.text);
-                            }}
-                          />
-                        </div>
-                        <div className="text-3xl font-semibold text-slate-800 mb-2">
-                          {currentCard.meaning}
-                        </div>
-                        <div className="inline-flex items-center gap-2 text-slate-500 text-sm">
-                          <ChevronRight size={16} />
-                          <span>Verbo francés</span>
-                        </div>
-                      </div>
-
-                      <div className="bg-slate-50 rounded-xl p-6">
-                        <div className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
-                          Ejemplo en contexto
-                        </div>
-                        <div className="text-3x1 text-slate-800 italic leading-relaxed">
-                          <InteractiveWords
-                            text={currentCard.context} // texto que quieres hacer clicable
-                            onWordClick={(word) => {
-                              InteractiveWords.speak(word.text); // reproducir la palabra
-                              console.log("Palabra clicada:", word.text);
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                      <button
-                        onClick={handleNext}
-                        className="flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-semibold bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:shadow-xl hover:scale-105 transition-all shadow-lg"
-                      >
-                        <span>Siguiente Tarjeta</span>
-                        <ArrowRight size={22} />
-                      </button>
-                    </div>
-                  </div>
+      {/* Contenido principal */}
+      <div className="p-8">
+        {/* Tarjeta de contenido principal */}
+        <div className="bg-gradient-to-br from-slate-50 to-white rounded-2xl p-8 border border-slate-200 shadow-sm mb-8">
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Palabra y significado */}
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
+                  Palabra en Francés
+                </h3>
+                <div className="text-5xl font-bold text-indigo-700 leading-tight">
+                  <InteractiveWords
+                    text={currentCard.word}
+                    onWordClick={(word) => {
+                      InteractiveWords.speak(word.text);
+                    }}
+                  />
                 </div>
               </div>
-            )}
+              
+              <div className="pt-6 border-t border-slate-200">
+                <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
+                  Significado
+                </h3>
+                <div className="text-2xl font-semibold text-slate-800">
+                  {currentCard.meaning}
+                </div>
+              </div>
+            </div>
+
+            {/* Contexto */}
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-1 h-8 bg-indigo-500 rounded-full"></div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-800">
+                    Contexto
+                  </h3>
+                  <p className="text-sm text-slate-500">
+                    Haz clic en cualquier palabra para escucharla
+                  </p>
+                </div>
+              </div>
+              <div className="text-lg text-slate-700 leading-relaxed bg-white p-6 rounded-xl border border-slate-200">
+                <InteractiveWords
+                  text={currentCard.context}
+                  onWordClick={(word) => {
+                    InteractiveWords.speak(word.text);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Botón para continuar */}
+        <div className="flex justify-center">
+          <button
+            onClick={handleNext}
+            className="group flex items-center justify-center gap-3 px-10 py-4 rounded-xl font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-xl hover:scale-105 transition-all shadow-lg min-w-[200px]"
+          >
+            <span>Continuar</span>
+            <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
           </>
         ) : (
           // PANTALLA DE ESPERA (entre cartas o al inicio)
