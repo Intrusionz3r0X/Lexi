@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { 
   Check, X, Trophy, Brain, Volume2, 
-  Target, Award, ArrowLeft 
+  Target, Award, ArrowLeft, Sparkles,
+  CheckCircle, XCircle, Flame, Zap, TrendingUp
 } from 'lucide-react';
 
 // ============================================================================
@@ -16,6 +17,8 @@ const GAME_CONFIG = {
   GLOW_DURATION: 1000,
   SUCCESS_SCORE_INCREMENT: 10,
   HOVER_AUDIO_DELAY: 300, // Delay antes de reproducir audio en hover
+  XP_PER_CORRECT: 10,
+  XP_PENALTY: 2,
 };
 
 const FEEDBACK_TYPES = {
@@ -105,7 +108,10 @@ class AudioService {
       oscillator.type = type;
 
       gainNode.gain.setValueAtTime(volume, this.audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+      gainNode.gain.exponentialRampToValueAtTime(
+        0.01,
+        this.audioContext.currentTime + duration,
+      );
 
       oscillator.start(this.audioContext.currentTime);
       oscillator.stop(this.audioContext.currentTime + duration);
@@ -223,39 +229,7 @@ const PageIndicator = ({ totalPages, currentPage, completedPages }) => {
   );
 };
 
-const GameStats = ({ score, completedWords, accuracy }) => (
-  <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-slate-200">
-    <div className="grid grid-cols-3 gap-4">
-      <div className="text-center p-4 bg-gradient-to-br from-indigo-50 to-white rounded-xl border border-slate-200">
-        <div className="inline-flex items-center gap-2 mb-2">
-          <Trophy size={20} className="text-amber-600" />
-          <span className="text-slate-700 font-semibold">Puntos</span>
-        </div>
-        <div className="text-3xl font-bold text-slate-800">{score}</div>
-      </div>
-      
-      <div className="text-center p-4 bg-gradient-to-br from-emerald-50 to-white rounded-xl border border-slate-200">
-        <div className="inline-flex items-center gap-2 mb-2">
-          <Check size={20} className="text-emerald-600" />
-          <span className="text-slate-700 font-semibold">Completadas</span>
-        </div>
-        <div className="text-3xl font-bold text-slate-800">
-          {completedWords.size}<span className="text-slate-400">/{ALL_WORDS.length}</span>
-        </div>
-      </div>
-      
-      <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-white rounded-xl border border-slate-200">
-        <div className="inline-flex items-center gap-2 mb-2">
-          <Target size={20} className="text-blue-600" />
-          <span className="text-slate-700 font-semibold">Precisión</span>
-        </div>
-        <div className="text-3xl font-bold text-slate-800">{accuracy}%</div>
-      </div>
-    </div>
-  </div>
-);
-
-const CompletionModal = ({ score, accuracy, onRestart }) => (
+const CompletionModal = ({ score, accuracy, onRestart, xp, totalCorrect, totalErrors, streak }) => (
   <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
     <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 max-w-md mx-4 text-center border border-slate-200 animate-bounce-in">
       <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full mb-8 shadow-lg">
@@ -267,6 +241,16 @@ const CompletionModal = ({ score, accuracy, onRestart }) => (
       </p>
       <div className="bg-gradient-to-r from-slate-50 to-white rounded-xl p-6 mb-8 border border-slate-200">
         <div className="text-4xl font-bold text-slate-800 mb-2">{score} puntos</div>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="text-center">
+            <div className="text-sm text-slate-600">XP</div>
+            <div className="text-xl font-bold text-indigo-600">{xp}</div>
+          </div>
+          <div className="text-center">
+            <div className="text-sm text-slate-600">Racha</div>
+            <div className="text-xl font-bold text-yellow-600">{streak}</div>
+          </div>
+        </div>
         <div className="text-slate-600">
           Precisión: <span className="font-semibold text-emerald-600">{accuracy}%</span>
         </div>
@@ -328,6 +312,12 @@ const LexiMatch = () => {
   const [slideDirection, setSlideDirection] = useState(SLIDE_DIRECTIONS.NONE);
   const [isProcessing, setIsProcessing] = useState(false);
   
+  // Estados transferibles entre juegos (nuevos)
+  const [xp, setXp] = useState(0);
+  const [totalCorrect, setTotalCorrect] = useState(0);
+  const [totalErrors, setTotalErrors] = useState(0);
+  const [streak, setStreak] = useState(0);
+  
   const audioServiceRef = useRef(null);
   const hoverTimeoutRef = useRef(null);
 
@@ -363,6 +353,16 @@ const LexiMatch = () => {
     if (attempts === 0) return 0;
     return Math.round((score / (attempts * GAME_CONFIG.SUCCESS_SCORE_INCREMENT)) * 100);
   }, [score, attempts]);
+
+  // Variables para la barra de progreso (nuevas)
+  const totalWords = useMemo(() => ALL_WORDS.length, []);
+  const completedWordsCount = useMemo(() => completedWords.size, [completedWords]);
+  const progressPercentage = useMemo(() => {
+    if (totalWords === 0) return 0;
+    return Math.round((completedWordsCount / totalWords) * 100);
+  }, [completedWordsCount, totalWords]);
+
+  const wordsRemaining = useMemo(() => totalWords - completedWordsCount, [totalWords, completedWordsCount]);
 
   // ==========================================================================
   // EFECTOS
@@ -456,6 +456,12 @@ const LexiMatch = () => {
     setDraggedWord(null);
     setIsDragging(false);
     setIsProcessing(false);
+    
+    // Resetear estados transferibles
+    setXp(0);
+    setTotalCorrect(0);
+    setTotalErrors(0);
+    setStreak(0);
   };
 
   // ==========================================================================
@@ -555,6 +561,11 @@ const LexiMatch = () => {
         return newSet;
       });
       
+      // Actualizar estadísticas transferibles
+      setTotalCorrect(prev => prev + 1);
+      setStreak(prev => prev + 1);
+      setXp(prev => prev + GAME_CONFIG.XP_PER_CORRECT);
+      
       // Limpiar glow después del delay
       setTimeout(() => {
         setGlowWord(null);
@@ -568,6 +579,11 @@ const LexiMatch = () => {
         ...prev,
         [nativeWord.nativeWord]: FEEDBACK_TYPES.INCORRECT
       }));
+      
+      // Actualizar estadísticas de errores
+      setTotalErrors(prev => prev + 1);
+      setStreak(0);
+      setXp(prev => Math.max(prev - GAME_CONFIG.XP_PENALTY, 0));
     }
     
     // Limpiar draggedWord
@@ -852,7 +868,11 @@ const LexiMatch = () => {
       {gameComplete && (
         <CompletionModal 
           score={score} 
-          accuracy={accuracy} 
+          accuracy={accuracy}
+          xp={xp}
+          totalCorrect={totalCorrect}
+          totalErrors={totalErrors}
+          streak={streak}
           onRestart={initializeGame}
         />
       )}
@@ -875,12 +895,68 @@ const LexiMatch = () => {
           </p>
         </header>
 
-        {/* Estadísticas */}
-        <GameStats 
-          score={score} 
-          completedWords={completedWords} 
-          accuracy={accuracy} 
-        />
+        {/* Panel de progreso completo */}
+        <div className="bg-gradient-to-r from-white to-slate-50 rounded-2xl shadow-xl p-4 mb-8 border border-slate-100 slide-up hover:shadow-2xl transition-shadow duration-300">
+          <div className="flex items-center justify-between gap-6">
+            {/* Progreso y barra */}
+            <div className="flex-1 flex items-center gap-4">
+              {/* Icono y numérico */}
+              <div className="flex items-center gap-3 min-w-[100px]">
+                <div className="p-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg shadow-md">
+                  <Target className="text-white" size={20} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-slate-800 font-bold text-lg">
+                    {completedWordsCount} / {totalWords}
+                  </span>
+                  <span className="text-slate-500 text-sm">Progreso</span>
+                </div>
+              </div>
+
+              {/* Barra de progreso */}
+              <div className="flex-1 bg-slate-100 rounded-full h-3 overflow-hidden">
+                <div
+                  className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-full rounded-full transition-all duration-700"
+                  style={{ width: `${progressPercentage}%` }}
+                />
+              </div>
+
+              {/* Porcentaje */}
+              <span className="text-slate-700 font-medium min-w-[50px] text-center">
+                {progressPercentage}%
+              </span>
+            </div>
+
+            {/* Métricas clave */}
+            <div className="flex items-center gap-4">
+              {/* XP */}
+              <div className="flex items-center gap-1 px-2 py-1 bg-indigo-50 rounded-lg border border-indigo-100 shadow-sm">
+                <Sparkles className="text-indigo-600" size={16} />
+                <span className="text-slate-800 font-bold">{xp}</span>
+              </div>
+
+              {/* Aciertos */}
+              <div className="flex items-center gap-1 px-2 py-1 bg-green-50 rounded-lg border border-green-100 shadow-sm">
+                <CheckCircle className="text-green-600" size={16} />
+                <span className="text-slate-800 font-bold">{totalCorrect}</span>
+              </div>
+
+              {/* Errores */}
+              <div className="flex items-center gap-1 px-2 py-1 bg-red-50 rounded-lg border border-red-100 shadow-sm">
+                <XCircle className="text-red-600" size={16} />
+                <span className="text-slate-800 font-bold">{totalErrors}</span>
+              </div>
+
+              {/* Racha */}
+              <div className="flex items-center gap-1 px-2 py-1 bg-yellow-50 rounded-lg border border-yellow-100 shadow-sm">
+                <Flame className="text-yellow-600" size={16} />
+                <span className="text-slate-800 font-bold">{streak}</span>
+              </div>
+
+              
+            </div>
+          </div>
+        </div>
 
         {/* Indicador de Página */}
         <div className="mb-6">
